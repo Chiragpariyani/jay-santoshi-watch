@@ -12,7 +12,7 @@ import shutil
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from data import SITE_URL, BUSINESS as B, DAYS, REVIEW_THEMES, REVIEWS, SERVICES, BRANDS, SOLD_BRANDS, AREAS  # noqa: E402
+from data import SITE_URL, BUSINESS as B, DAYS, REVIEW_THEMES, REVIEWS, SERVICES, BRANDS, SOLD_BRANDS, SOLD_WATCH_BRANDS, PHOTOS, AREAS  # noqa: E402
 from guides import GUIDES  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -94,7 +94,8 @@ def business_schema():
                        "wall clock repair, and wristwatches and wall clocks for sale.",
         "url": SITE_URL + "/",
         "logo": SITE_URL + "/icon-512.png",
-        "image": SITE_URL + "/og-image.png",
+        "photo": [{"@type": "ImageObject", "contentUrl": SITE_URL + "/img/" + ph["file"], "description": ph["alt"]} for ph in PHOTOS.values()],
+        "image": [SITE_URL + "/img/" + ph["file"] for ph in PHOTOS.values()] + [SITE_URL + "/og-image.jpg"],
         "telephone": B["phone"],
         "address": {
             "@type": "PostalAddress",
@@ -190,7 +191,7 @@ def footer():
     svc_links = "".join(f'<li><a href="/services/{s["slug"]}/">{e(s["name"])}</a></li>' for s in SERVICES[:7])
     area_links = "".join(f'<li><a href="/areas/{a["slug"]}/">Watch shop in {e(a["name"])}</a></li>' for a in AREAS[:9])
     more = "".join(f'<li><a href="{p}">{n}</a></li>' for n, p in [
-        ("All areas we serve", "/areas/"), ("Brands we service", "/brands/"), ("Watch care guides", "/guides/"),
+        ("All areas we serve", "/areas/"), ("Brands we sell & service", "/brands/"), ("Watch care guides", "/guides/"),
         ("FAQ", "/faq/"), ("About us", "/about/"), ("Contact & directions", "/contact/")])
     return f"""<footer class="ftr"><div class="wrap"><div class="cols">
 <div><h2>{e(B["name"])}</h2>
@@ -260,7 +261,29 @@ def answer_box(text, label="Quick answer"):
 
 REVIEW_FOR = {"watch-battery-replacement": 0, "watch-repair": 0, "wall-clock-repair": 1, "wall-clocks": 1,
               "watch-strap-replacement": 2, "watch-accessories": 2, "wrist-watches": 3, "gift-watches": 3,
-              "seiko": 0, "ajanta-orpat": 1}
+              "seiko": 0, "ajanta": 1}
+
+
+SVC_PHOTOS = {"wrist-watches": ["display", "interior"], "wall-clocks": ["interior", "station-clock", "alarm-clock"],
+              "gift-watches": ["display", "station-clock", "alarm-clock"], "wall-clock-repair": ["interior"],
+              "watch-accessories": ["interior"], "watch-battery-replacement": ["storefront"],
+              "watch-strap-replacement": ["storefront"], "watch-repair": ["interior"]}
+BRAND_PHOTOS = {"titan": ["display", "storefront"], "sonata": ["display"], "fastrack": ["interior"],
+                "lamex": ["storefront", "interior"], "maxima": ["storefront"], "ajanta": ["station-clock", "alarm-clock", "interior"]}
+
+
+def photo(key, eager=False, cls="photo"):
+    ph = PHOTOS[key]
+    load = 'fetchpriority="high"' if eager else 'loading="lazy"'
+    return (f'<figure class="{cls}"><img src="/img/{ph["file"]}" width="{ph["w"]}" height="{ph["h"]}" alt="{e(ph["alt"])}" '
+            f'{load} decoding="async"><figcaption>{e(ph["caption"])}</figcaption></figure>')
+
+
+def gallery(keys, heading="Inside our shop", alt=False, intro=""):
+    figs = "".join(photo(k) for k in keys)
+    intro = f"<p>{e(intro)}</p>" if intro else ""
+    return (f'<section{" class=alt" if alt else ""}><div class="wrap"><h2 style="margin-top:0">{e(heading)}</h2>{intro}'
+            f'<div class="gallery">{figs}</div></div></section>')
 
 
 def review_card(r):
@@ -332,7 +355,7 @@ def page(path, title, description, body, schema=None, crumbs=None, og_type="webs
 <meta property="og:title" content="{e(title)}">
 <meta property="og:description" content="{e(description)}">
 <meta property="og:url" content="{canonical}">
-<meta property="og:image" content="{SITE_URL}/og-image.png">
+<meta property="og:image" content="{SITE_URL}/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="en_IN">
@@ -425,23 +448,23 @@ def build_home():
         ("How long does watch battery replacement take?", "Usually just a few minutes. Most customers wait while it's done."),
         ("Do you repair wall clocks?", "Yes. We repair quartz wall, table and alarm clocks and replace clock movements. For very old mechanical clocks, please call first."),
         ("Do you repair all watch brands?", "We repair most everyday brands, including Titan, Sonata, Fastrack, Casio, Timex, Maxima and HMT. We're an independent shop, not an authorised service centre for any brand."),
-        ("Which watch brands do you sell?", f"We sell {', '.join(SOLD_BRANDS[:-1])} and {SOLD_BRANDS[-1]} watches for men, women and kids, plus wall clocks, straps and watch accessories."),
+        ("Which watch brands do you sell?", f"We sell {', '.join(SOLD_WATCH_BRANDS[:-1])} and {SOLD_WATCH_BRANDS[-1]} watches for men, women and kids, plus Ajanta wall clocks, digital LED clocks, alarm clocks, straps and watch accessories."),
         ("Which areas do you serve?", "Customers come to us from Chandkheda, Motera, Sabarmati, Visat, Zundal, Tragad, Ranip, Gota, Gandhinagar and all over Ahmedabad."),
     ]
     summary = (f"{B['name']} is a watch shop and watch & clock repair service at Swapna Shilp Complex, Nigam Nagar, "
                f"Chandkheda, Ahmedabad (near ONGC, Visat–Sabarmati Highway). It's rated {B['rating']}/5 from "
                f"{B['review_count']}+ Google reviews and is open daily from 10:30 AM to 9:00 PM. Services include watch battery "
                "replacement, watch repair, strap and chain replacement, glass replacement and wall clock repair, along with "
-               f"{', '.join(SOLD_BRANDS[:-1])} and {SOLD_BRANDS[-1]} wristwatches and wall clocks for sale.")
-    body = f"""<section class="hero"><div class="wrap">
+               f"{', '.join(SOLD_WATCH_BRANDS[:-1])} and {SOLD_WATCH_BRANDS[-1]} wristwatches and Ajanta wall and digital clocks for sale.")
+    body = f"""<section class="hero"><div class="wrap hero-grid"><div>
 <h1>Watch Shop &amp; Watch Repair in Chandkheda, Ahmedabad</h1>
-<p class="lead">{e(B["name"])}: quick watch battery replacement, honest watch and wall clock repairs, new straps and chains, and Titan, Sonata, Timex, Maxima &amp; Lamex watches at fair prices. In Nigam Nagar, near ONGC.</p>
+<p class="lead">{e(B["name"])}: quick watch battery replacement, honest watch and wall clock repairs, new straps and chains, and Titan, Sonata, Fastrack, Timex, Maxima, Lamex watches and Ajanta clocks at fair prices. In Nigam Nagar, near ONGC.</p>
 <div class="meta"><span class="chip"><span class="stars">★★★★★</span> {B["rating"]}/5 · {B["review_count"]}+ Google reviews</span>
 <span class="chip">{icon("clock", 16)} {e(B["hours_display"])}</span><span class="chip">{icon("pin", 16)} Nigam Nagar, Chandkheda</span></div>
 <div class="btns"><a class="btn btn-gold" href="tel:{B["phone"]}">{icon("phone", 18)} Call {e(B["phone_display"])}</a>
 <a class="btn btn-wa" href="{e(wa_link())}" rel="noopener" target="_blank">{icon("wa", 18)} WhatsApp us</a>
 <a class="btn btn-line" href="{e(B["maps_url"])}" rel="noopener" target="_blank">{icon("pin", 18)} Directions</a></div>
-</div></section>
+</div>{photo("interior", eager=True, cls="photo hero-photo")}</div></section>
 <section><div class="wrap">{answer_box(summary, "About us in one paragraph")}
 <p class="local">ચાંદખેડામાં ઘડિયાળની દુકાન અને ઘડિયાળ રિપેર · चांदखेड़ा में घड़ी की दुकान और घड़ी रिपेयर</p></div></section>
 <section><div class="wrap"><h2 style="margin-top:0">Watch &amp; clock repair services</h2>{services}</div></section>
@@ -449,6 +472,7 @@ def build_home():
 <p>From {B["review_count"]}+ Google reviews, these are the things customers mention most:</p><div class="grid">{themes}</div>
 </div></section>
 {reviews_section(range(len(REVIEWS)), "Real reviews from our customers")}
+{gallery(["storefront", "display", "station-clock", "alarm-clock"], "Visit our shop", alt=True, intro="Watches from Titan, Sonata, Fastrack, Lamex and Maxima, Ajanta wall and digital clocks, and a counter for battery and strap work. Look for the red TITAN signboard at Swapna Shilp Complex, Nigam Nagar.")}
 <section><div class="wrap"><h2 style="margin-top:0">Watch shop near you, across Ahmedabad</h2>
 <p>We're in Chandkheda, North Ahmedabad, close to Motera, Sabarmati, Visat, Zundal, Tragad and Gandhinagar. Customers also come to us from across the city. Find your area:</p>
 {area_pills(AREAS)}</div></section>
@@ -505,7 +529,8 @@ def build_service(s):
 <section><div class="wrap prose">{answer_box(f"{B['name']} offers {s['name'].lower()} at {full_address()}. {s['short']} Open {HOURS}.")}
 {intro}<p class="local">{e(s["local"])}</p></div></section>
 <section class="alt"><div class="wrap"><h2 style="margin-top:0">What's included</h2>{ticks(s["includes"])}{steps}</div></section>
-{reviews_section([REVIEW_FOR[s["slug"]]], "From our Google reviews") if s["slug"] in REVIEW_FOR else ""}
+{gallery(SVC_PHOTOS[s["slug"]], "At our Chandkheda shop") if s["slug"] in SVC_PHOTOS else ""}
+{reviews_section([REVIEW_FOR[s["slug"]]], "From our Google reviews", alt=True) if s["slug"] in REVIEW_FOR else ""}
 {faq_html(faqs)}
 <section><div class="wrap"><h2 style="margin-top:0">{e(s["name"])} near you</h2>
 <p>We serve customers from all over Ahmedabad and Gandhinagar. Pick your area:</p>{area_pills(AREAS, s if s["in_areas"] else None)}
@@ -543,6 +568,7 @@ def build_area(a, i):
 <a class="btn btn-gold" href="{e(B["maps_url"])}" rel="noopener" target="_blank">{icon("pin", 18)} Directions</a></div></div>
 <section><div class="wrap prose">{answer_box(f"The nearest {B['name']} shop for {a['name']} customers is at {full_address()}. Open {HOURS}. Phone {B['phone_display']}.")}
 <h2>Getting here from {e(a["name"])}</h2><p>{e(area_reach(a))}</p>
+{photo("storefront", cls="photo photo-side")}
 <p>Landmarks around {e(a["name"])}: {e(lms)} ({e(a["zone"])}).</p>
 <p class="local">{e(a["name"])} નજીક ઘડિયાળ રિપેર અને બેટરી · {e(a["name"])} के पास घड़ी रिपेयर और बैटरी</p></div></section>
 <section class="alt"><div class="wrap"><h2 style="margin-top:0">Services for {e(a["name"])} customers</h2>{service_cards(SERVICES, a)}</div></section>
@@ -570,7 +596,8 @@ def build_area_service(a, s):
 <div class="btns"><a class="btn btn-dark" href="tel:{B["phone"]}">{icon("phone", 18)} Call {e(B["phone_display"])}</a>
 <a class="btn btn-wa" href="{e(wa_link("Hello, I am from " + a["name"] + ". I want " + s["keyword"]))}" rel="noopener" target="_blank">{icon("wa", 18)} WhatsApp</a></div></div>
 <section><div class="wrap prose">{answer_box(f"For {s['keyword']} near {a['name']}, visit {B['name']} at {full_address()}. Open {HOURS}. Call {B['phone_display']}.")}
-{intro}<h2>Coming from {e(a["name"])}</h2><p>{e(area_reach(a))}</p><p class="local">{e(s["local"])}</p></div></section>
+{intro}<h2>Coming from {e(a["name"])}</h2><p>{e(area_reach(a))}</p>
+{photo("storefront", cls="photo photo-side")}<p class="local">{e(s["local"])}</p></div></section>
 <section class="alt"><div class="wrap"><h2 style="margin-top:0">What's included</h2>{ticks(s["includes"])}
 <h2>How it works</h2><ol class="steps">{"".join(f"<li><strong>{e(t)}</strong><br>{e(d)}</li>" for t, d in STEPS_REPAIR)}</ol></div></section>
 {reviews_section([REVIEW_FOR[s["slug"]]], "From our Google reviews") if s["slug"] in REVIEW_FOR else ""}
@@ -589,12 +616,12 @@ def build_brands_index():
     def cards(bs, label):
         return '<div class="grid">' + "".join(f'<div class="card"><h3><a href="/brands/{b["slug"]}/">{e(b["name"])}{label}</a></h3><p>{e(b["note"])}</p></div>' for b in bs) + "</div>"
     body = f"""<div class="wrap page-head"><h1>Watch Brands We Sell &amp; Repair in Ahmedabad</h1>
-<p class="lead">New Titan, Sonata, Timex, Maxima and Lamex watches, plus battery replacement, straps, glass and everyday repairs for most popular watch and clock brands, at our Chandkheda shop.</p></div>
+<p class="lead">New Titan, Sonata, Fastrack, Timex, Maxima and Lamex watches and Ajanta clocks, plus battery replacement, straps, glass and everyday repairs for most popular watch and clock brands, at our Chandkheda shop.</p></div>
 <section><div class="wrap"><h2 style="margin-top:0">Brands we sell</h2>{cards([b for b in BRANDS if b["sold"]], " watches")}
 <h2>Brands we service</h2>{cards([b for b in BRANDS if not b["sold"]], " repair")}
 <p class="note">{e(B["name"])} is an independent watch shop. It is not an authorised service centre for any of these brands, and brand names are used only to describe the watches we work on. For warranty repairs, please contact the brand's authorised service centre.</p></div></section>{cta_block()}"""
-    page("/brands/", f"Watch Brands We Sell & Repair: Titan, Sonata, Timex, Maxima, Lamex | {B['name']}",
-         "Buy Titan, Sonata, Timex, Maxima & Lamex watches in Chandkheda. Battery, strap & repair for Seiko, Casio, Fastrack, HMT, Fossil, Citizen and more.",
+    page("/brands/", f"Watch Brands We Sell & Repair: Titan, Sonata, Fastrack, Lamex, Ajanta | {B['name']}",
+         "Buy Titan, Sonata, Fastrack, Timex, Maxima, Lamex watches & Ajanta clocks in Chandkheda. Repairs for Seiko, Casio, HMT, Fossil & more.",
          body, crumbs=crumbs, priority="0.8")
 
 
@@ -618,7 +645,12 @@ def build_brand(b):
                         "Usually a few minutes while you wait, for most models."))
     svc_links = service_cards([SVC[x] for x in (["wall-clock-repair", "wall-clocks"] if is_clock else
                                                 ["watch-battery-replacement", "watch-repair", "watch-strap-replacement", "watch-glass-replacement"])])
-    if is_clock:
+    if is_clock and b["sold"]:
+        title = f"{b['name']}: Buy & Repair in Chandkheda, Ahmedabad"
+        items = ["New wall clocks, station clocks, digital LED clocks and alarm clocks"] + items
+        faqs.insert(0, (f"Where can I buy {b['name']} in Chandkheda?",
+                        f"{B['name']} at {full_address()} sells {b['name']}. Call {B['phone_display']} or WhatsApp {B['phone2_display']} to ask about designs in stock."))
+    elif is_clock:
         title = f"{b['name']} Repair in Ahmedabad"
     elif b["sold"]:
         title = f"{b['name']} Watches: Buy & Repair in Chandkheda, Ahmedabad"
@@ -631,6 +663,7 @@ def build_brand(b):
 <section><div class="wrap prose">{answer_box(f"Bring your {noun} to {B['name']}, {full_address()}. We handle everyday jobs like {'movement replacement' if is_clock else 'batteries, straps, glass'} and repairs. Open {HOURS}.")}
 <h2>{e(noun)} services</h2>{ticks(items)}
 <p class="note">{e(B["name"])} is an independent shop{" and is not an authorised " + e(b["name"]) + " service centre" if b["sold"] else " and is not affiliated with or authorised by " + e(b["name"])}. Brand names are used only to describe the watches and clocks we sell and work on.</p></div></section>
+{gallery(BRAND_PHOTOS[b["slug"]], f"{b['name']} at our shop") if b["slug"] in BRAND_PHOTOS else ""}
 {reviews_section([REVIEW_FOR[b["slug"]]], "From our Google reviews", alt=True) if b["slug"] in REVIEW_FOR else ""}
 <section class="alt"><div class="wrap"><h2 style="margin-top:0">Related services</h2>{svc_links}</div></section>
 {faq_html(faqs)}{cta_block()}"""
@@ -667,7 +700,7 @@ def build_guide(g):
     rel = service_cards([SVC[x] for x in g["related"]])
     article = {"@type": "Article", "headline": g["title"], "description": g["description"],
                "author": {"@id": BIZ_ID}, "publisher": {"@id": BIZ_ID}, "datePublished": "2026-10-27",
-               "dateModified": TODAY, "mainEntityOfPage": SITE_URL + path, "image": SITE_URL + "/og-image.png",
+               "dateModified": TODAY, "mainEntityOfPage": SITE_URL + path, "image": SITE_URL + "/og-image.jpg",
                "inLanguage": "en-IN"}
     body = f"""<div class="wrap page-head"><h1>{e(g["title"])}</h1><p class="lead">{e(g["description"])}</p>
 <p class="note">By {e(B["name"])}, Chandkheda, Ahmedabad · Updated {TODAY}</p></div>
@@ -684,10 +717,10 @@ def build_about():
 <p class="lead">A local watch shop and watch &amp; clock repair service in Nigam Nagar, Chandkheda, Ahmedabad, trusted by {B["review_count"]}+ Google reviewers ({B["rating"]}★).</p></div>
 <section><div class="wrap prose">
 <p>{e(B["name"])} (also known as {e(", ".join(B["alt_names"]))}) is a neighbourhood watch store and repair shop at {e(full_address())}.</p>
-<p>We help people in Chandkheda and across Ahmedabad keep their watches and clocks running. We change batteries, repair watches and wall clocks, fit new straps, chains and glass, and sell wristwatches and wall clocks for daily use and gifting.</p>
+<p>We help people in Chandkheda and across Ahmedabad keep their watches and clocks running. We change batteries, repair watches and wall clocks, fit new straps, chains and glass, and sell {e(', '.join(SOLD_WATCH_BRANDS))} watches and Ajanta wall, digital and alarm clocks for daily use and gifting.</p>
 <h2>How we work</h2>{ticks(["We check your watch in front of you", "We explain the problem in simple words", "We tell you the price before starting", "We test everything before handing it back", "We tell you honestly if a job needs a specialist or brand service centre"])}
 <h2>What customers say</h2>{ticks([t + ": " + d for t, d in REVIEW_THEMES])}
-</div></section>{reviews_section(range(len(REVIEWS)), "Reviews from our customers", alt=True)}{cta_block()}"""
+</div></section>{gallery(list(PHOTOS), "Photos of our shop", alt=True)}{reviews_section(range(len(REVIEWS)), "Reviews from our customers")}{cta_block()}"""
     page("/about/", f"About {B['name']} | Watch Shop in Chandkheda, Ahmedabad",
          f"About {B['name']}: a trusted local watch shop and watch & clock repair service in Nigam Nagar, Chandkheda, Ahmedabad. Rated {B['rating']}★ by {B['review_count']}+ customers.",
          body, crumbs=crumbs, priority="0.6")
@@ -703,7 +736,8 @@ def build_contact():
 <a class="btn btn-gold" href="{e(B["maps_url"])}" rel="noopener" target="_blank">{icon("pin", 18)} Open in Google Maps</a></div></div>
 <section><div class="wrap two"><div>{map_embed()}</div><div>{nap_card()}
 <h2>Opening hours</h2><table class="hours"><tbody>{rows}</tbody></table>
-<p class="note">Hours may change on festivals and public holidays. Please call before a special trip.</p></div></div></section>"""
+<p class="note">Hours may change on festivals and public holidays. Please call before a special trip.</p></div></div></section>
+{gallery(["storefront", "interior"], "How to find us", alt=True, intro="Look for the red TITAN – Jay Santoshi Watch signboard (Gujarati: જય સંતોષી વૉચ) at Swapna Shilp Complex, Nigam Nagar, near ONGC.")}"""
     page("/contact/", f"Contact & Directions | {B['name']}, Chandkheda, Ahmedabad",
          f"{B['name']}, Swapna Shilp Complex, Nigam Nagar, Chandkheda, Ahmedabad 382424. Call {B['phone_display']}. Open daily 10:30 AM–9 PM.",
          body, crumbs=crumbs, priority="0.8")
@@ -818,8 +852,7 @@ Customers come from: {areas}, and the rest of Ahmedabad and Gandhinagar.
 
 
 def build_static():
-    for name in os.listdir(os.path.join(SRC, "static")):  # style.css, Google verification file, etc.
-        shutil.copy(os.path.join(SRC, "static", name), os.path.join(OUT, name))
+    shutil.copytree(os.path.join(SRC, "static"), OUT, dirs_exist_ok=True)  # style.css, img/, Google verification file
     write("/favicon.svg", """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#14213d"/><rect x="24" y="6" width="16" height="10" rx="2" fill="#c8962b"/><rect x="24" y="48" width="16" height="10" rx="2" fill="#c8962b"/><circle cx="32" cy="32" r="17" fill="#fff" stroke="#c8962b" stroke-width="4"/><path d="M32 22v10l7 4" stroke="#14213d" stroke-width="4" stroke-linecap="round" fill="none"/></svg>""")
     manifest = {"name": B["name"], "short_name": "Jay Santoshi", "start_url": "/", "display": "standalone",
                 "background_color": "#ffffff", "theme_color": "#14213d",
@@ -856,17 +889,26 @@ def make_images():
     for sz, name in [(180, "apple-touch-icon.png"), (192, "icon-192.png"), (512, "icon-512.png")]:
         logo(sz).save(os.path.join(OUT, name))
 
-    og = Image.new("RGB", (1200, 630), "#14213d")
+    photo_path = os.path.join(SRC, "static", "img", PHOTOS["interior"]["file"])
+    bg = Image.open(photo_path).convert("RGB")
+    scale = max(1200 / bg.width, 630 / bg.height)
+    bg = bg.resize((round(bg.width * scale), round(bg.height * scale)), Image.LANCZOS)
+    left, top = (bg.width - 1200) // 2, (bg.height - 630) // 2
+    og = bg.crop((left, top, left + 1200, top + 630))
+    shade = Image.new("L", (1200, 630))
+    for x in range(1200):  # dark on the left for text, fading to the photo on the right
+        ImageDraw.Draw(shade).line([(x, 0), (x, 630)], fill=max(40, int(225 - (x - 720) * 0.6)) if x > 720 else 225)
+    og = Image.composite(Image.new("RGB", (1200, 630), "#0e1730"), og, shade)
     d = ImageDraw.Draw(og)
-    d.rectangle([0, 590, 1200, 630], fill="#c8962b")
-    og.paste(logo(220), (900, 190), logo(220))
-    d.text((80, 120), B["name"], font=font("DejaVuSans-Bold.ttf", 76), fill="#ffffff")
-    d.text((80, 225), "Watch Shop & Watch Repair", font=font("DejaVuSans-Bold.ttf", 46), fill="#c8962b")
-    d.text((80, 290), "Battery • Straps • Glass • Clock Repair", font=font("DejaVuSans.ttf", 34), fill="#dfe5f3")
-    d.text((80, 380), f"★ {B['rating']}/5 · {B['review_count']}+ Google reviews", font=font("DejaVuSans-Bold.ttf", 36), fill="#ffc94a")
-    d.text((80, 450), "Nigam Nagar, Chandkheda, Ahmedabad", font=font("DejaVuSans.ttf", 34), fill="#ffffff")
-    d.text((80, 505), f"Call {B['phone_display']} · Open daily 10:30 AM–9 PM", font=font("DejaVuSans.ttf", 30), fill="#dfe5f3")
-    og.save(os.path.join(OUT, "og-image.png"), optimize=True)
+    d.rectangle([0, 600, 1200, 630], fill="#c8962b")
+    d.text((60, 110), B["name"], font=font("DejaVuSans-Bold.ttf", 70), fill="#ffffff")
+    d.text((60, 205), "Watch Shop & Watch Repair", font=font("DejaVuSans-Bold.ttf", 44), fill="#e8b64a")
+    d.text((60, 270), "Titan • Sonata • Fastrack • Lamex • Ajanta", font=font("DejaVuSans.ttf", 30), fill="#dfe5f3")
+    d.text((60, 315), "Battery • Straps • Glass • Clock Repair", font=font("DejaVuSans.ttf", 30), fill="#dfe5f3")
+    d.text((60, 400), f"★ {B['rating']}/5 · {B['review_count']}+ Google reviews", font=font("DejaVuSans-Bold.ttf", 34), fill="#ffc94a")
+    d.text((60, 460), "Nigam Nagar, Chandkheda, Ahmedabad", font=font("DejaVuSans.ttf", 32), fill="#ffffff")
+    d.text((60, 512), f"Call {B['phone_display']} · Open daily 10:30 AM–9 PM", font=font("DejaVuSans.ttf", 28), fill="#dfe5f3")
+    og.save(os.path.join(OUT, "og-image.jpg"), quality=84, optimize=True)
 
 
 def main():

@@ -234,7 +234,7 @@ SERVICES = [
         "kind": "shop",
         "in_areas": False,
         "keyword": "watch shop",
-        "short": "Titan, Sonata, Timex, Maxima and Lamex wristwatches for men, women and kids, for daily wear, office and gifting.",
+        "short": "Titan, Sonata, Fastrack, Timex, Maxima and Lamex wristwatches for men, women and kids, for daily wear, office and gifting.",
         "intro": [
             "Looking for a new watch in Chandkheda? Jay Santoshi Watch has a range of wristwatches for men, women and kids, from simple everyday analog watches to sporty digital watches and stylish fashion watches.",
             "Customers often tell us our prices compare well with buying online, and you get to see the watch, try it on and get the strap sized before you leave.",
@@ -245,7 +245,7 @@ SERVICES = [
             "Kids' digital and analog watches",
             "Sports and digital watches",
             "Couple watches and gift sets",
-            "Brands: Titan, Sonata, Timex, Maxima and Lamex",
+            "Brands: Titan, Sonata, Fastrack, Timex, Maxima and Lamex",
             "Free strap or chain sizing when you buy",
         ],
         "faqs": [
@@ -271,7 +271,9 @@ SERVICES = [
             "Living room and decorative wall clocks",
             "Simple, easy-to-read clocks for kitchens and offices",
             "Silent (non-ticking) clocks for bedrooms",
-            "Pendulum-style wall clocks",
+            "Pendulum-style and double-sided station clocks",
+            "Digital LED wall clocks with date display",
+            "Ajanta wall clocks and RGB digital alarm clocks",
             "Table and alarm clocks",
             "Gift-ready clocks for housewarming and openings",
         ],
@@ -341,19 +343,39 @@ BRANDS = [
     # sold=True: brands we sell new watches of (and also service)
     {"slug": "titan", "name": "Titan", "sold": True, "note": "We sell new Titan watches and service them too. Titan is one of India's most-worn watch brands, and we handle everyday Titan jobs: battery replacement, strap and chain fitting, glass replacement and general repairs."},
     {"slug": "sonata", "name": "Sonata", "sold": True, "note": "We sell Sonata watches, which are popular, value-for-money everyday watches. We also regularly replace Sonata batteries, straps and glass, and repair stopped Sonata watches."},
+    {"slug": "fastrack", "name": "Fastrack", "sold": True, "note": "We sell Fastrack watches, which are popular with students and young professionals. We also change batteries, fit new straps and fix common problems on Fastrack analog and digital watches."},
     {"slug": "timex", "name": "Timex", "sold": True, "note": "We sell Timex watches and service them too, including battery, strap and glass replacement and repairs of everyday Timex analog and digital watches."},
     {"slug": "maxima", "name": "Maxima", "sold": True, "note": "We sell Maxima watches, which are common in Gujarat. We also change Maxima batteries, fit straps and chains, and repair everyday Maxima watches."},
     {"slug": "lamex", "name": "Lamex", "sold": True, "note": "We sell Lamex watches and help with batteries, straps and everyday repairs on them."},
     {"slug": "seiko", "name": "Seiko", "sold": False, "note": "We replace batteries on Seiko quartz watches, including watches bought abroad, usually in a few minutes and for much less than the brand's own service. We also fit straps and do general care."},
-    {"slug": "fastrack", "name": "Fastrack", "sold": False, "note": "Fastrack watches are popular with students and young professionals. We change batteries, fit new straps and fix common problems on Fastrack analog and digital watches."},
     {"slug": "casio", "name": "Casio", "sold": False, "note": "From classic Casio digital watches to G-Shock-style models, we help with battery changes, straps and common button and display issues."},
     {"slug": "hmt", "name": "HMT", "sold": False, "note": "Many families still have HMT watches with real sentimental value. Bring yours in and we'll check it and tell you honestly what can be done."},
     {"slug": "fossil", "name": "Fossil", "sold": False, "note": "We help with battery replacement, strap and chain resizing and general care for Fossil fashion watches. Some model-specific parts may need the brand's service centre."},
     {"slug": "citizen", "name": "Citizen", "sold": False, "note": "We help with battery replacement, straps and chains on Citizen quartz watches. Eco-Drive and complicated models may need specialist or brand service."},
-    {"slug": "ajanta-orpat", "name": "Ajanta & Orpat Clocks", "sold": False, "note": "Ajanta and Orpat wall clocks are in many Gujarati homes. We repair them and replace their movements, often keeping the original dial and frame."},
+    {"slug": "ajanta", "name": "Ajanta Clocks", "sold": True, "note": "We sell Ajanta wall clocks, double-sided station clocks, digital LED clocks and RGB digital alarm clocks. Ajanta and Orpat clocks are in many Gujarati homes, and we also repair them and replace their movements, often keeping the original dial and frame."},
 ]
 
 SOLD_BRANDS = [b["name"] for b in BRANDS if b["sold"]]
+SOLD_WATCH_BRANDS = [n for n in SOLD_BRANDS if "Clock" not in n]
+
+# Real shop photos (src/static/img). "pages": where each photo is shown.
+PHOTOS = {
+    "storefront": {"file": "jay-santoshi-watch-shop-chandkheda-storefront.webp", "w": 475, "h": 844,
+                   "alt": "Jay Santoshi Watch shop front with TITAN signboard, Lamex and Maxima boards, Swapna Shilp Complex, Nigam Nagar, Chandkheda",
+                   "caption": "Our shop front: look for the red TITAN – Jay Santoshi Watch signboard at Swapna Shilp Complex."},
+    "interior": {"file": "wall-clocks-watches-shop-interior-chandkheda.webp", "w": 1121, "h": 844,
+                 "alt": "Inside Jay Santoshi Watch: wall clocks, digital LED clocks, and Sonata, Fastrack and Lamex watch displays",
+                 "caption": "Inside the shop: wall clocks, digital LED clocks and watch counters."},
+    "display": {"file": "titan-sonata-watches-display-ahmedabad.webp", "w": 635, "h": 844,
+                "alt": "Titan and Sonata watches for men and women on display with price tags at Jay Santoshi Watch, Ahmedabad",
+                "caption": "Titan and Sonata watches for men and women, in a range of prices."},
+    "station-clock": {"file": "ajanta-double-sided-station-clock.webp", "w": 635, "h": 844,
+                      "alt": "Ajanta double-sided station clock with Roman numerals at Jay Santoshi Watch",
+                      "caption": "Ajanta double-sided station clock."},
+    "alarm-clock": {"file": "ajanta-rgb-digital-alarm-clock.webp", "w": 635, "h": 844,
+                    "alt": "Ajanta RGB digital alarm clock with colour display at Jay Santoshi Watch",
+                    "caption": "Ajanta RGB digital alarm clock."},
+}
 
 # Real Google reviews (copied word-for-word from the Google Maps listing).
 REVIEWS = [

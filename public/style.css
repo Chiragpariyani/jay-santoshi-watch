@@ -139,3 +139,13 @@ table.hours td+td{text-align:right}
 .review blockquote p{margin:0}
 .review figcaption{font-size:.88rem;color:var(--muted);margin-top:auto}
 .review figcaption strong{color:var(--ink)}
+.hero-grid{display:grid;grid-template-columns:1.25fr 1fr;gap:32px;align-items:center}
+@media (max-width:900px){.hero-grid{grid-template-columns:1fr}}
+.photo{margin:0}
+.photo img{display:block;width:100%;height:auto;border-radius:var(--radius);box-shadow:var(--shadow);background:var(--bg-2)}
+.photo figcaption{font-size:.88rem;color:var(--muted);margin-top:8px}
+.hero-photo figcaption{color:#c9d1e6}
+.hero-photo img{aspect-ratio:4/3;object-fit:cover;border:3px solid rgba(255,255,255,.12)}
+.gallery{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));align-items:start}
+.gallery .photo img{aspect-ratio:3/4;object-fit:cover}
+.photo-side{max-width:300px;margin:8px 0 18px}

@@ -3,7 +3,30 @@
   "outputDirectory": "public",
   "trailingSlash": true,
   "headers": [
-    { "source": "/(.*)\\.(css|png|svg)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800" }] },
-    { "source": "/(.*)", "headers": [{ "key": "X-Content-Type-Options", "value": "nosniff" }] }
+    {
+      "source": "/(.*)\\.(css|png|svg|webp|jpg)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=604800"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/brands/ajanta-orpat/",
+      "destination": "/brands/ajanta/",
+      "permanent": true
+    }
   ]
 }
