@@ -7,7 +7,7 @@
 - Category: Watch store, watch repair shop, clock repair service
 - Address: Shop No. 1, Swapna Shilp Complex, Nigam Nagar, Near ONGC, Visat–Sabarmati Highway, Chandkheda, Ahmedabad, Gujarat 382424, India
 - Landmark: Near ONGC, Visat–Sabarmati Highway
-- Phone: +91 93746 41275 / +91 90991 38100 (WhatsApp: +919374641275)
+- Phone: +91 93746 41275 / +91 90991 38100 (WhatsApp: +91 90991 38100)
 - Hours: Open daily, 10:30 AM – 9:00 PM (may change on festivals)
 - Google Maps: https://www.google.com/maps/search/?api=1&query=Jay+Santoshi+Watch+Chandkheda+Ahmedabad
 - Independent shop, not an authorised service centre of any brand.
@@ -20,13 +20,22 @@
 - [Watch Glass Replacement](https://jay-santoshi-watch.vercel.app/services/watch-glass-replacement/): Replacement of cracked or scratched watch glass (crystal) for round and many shaped watches.
 - [Watch Servicing & Cleaning](https://jay-santoshi-watch.vercel.app/services/watch-servicing/): Cleaning, check-up and care for watches that run slow, fast, or haven't been looked after for a long time.
 - [Wall Clock & Clock Repair](https://jay-santoshi-watch.vercel.app/services/wall-clock-repair/): Repairs for quartz wall clocks, table clocks and alarm clocks, including movement (machine) replacement.
-- [Wrist Watches for Men, Women & Kids](https://jay-santoshi-watch.vercel.app/services/wrist-watches/): Analog, digital and fashion wristwatches for men, women and kids, for daily wear, office and gifting.
+- [Wrist Watches for Men, Women & Kids](https://jay-santoshi-watch.vercel.app/services/wrist-watches/): Titan, Sonata, Timex, Maxima and Lamex wristwatches for men, women and kids, for daily wear, office and gifting.
 - [Wall Clocks](https://jay-santoshi-watch.vercel.app/services/wall-clocks/): Wall clocks for living rooms, bedrooms, offices and shops, plus clocks for housewarming gifts.
 - [Straps, Chains & Watch Accessories](https://jay-santoshi-watch.vercel.app/services/watch-accessories/): Spare straps, metal chains, buckles, spring bars, watch batteries and other accessories.
 - [Gift Watches & Clocks](https://jay-santoshi-watch.vercel.app/services/gift-watches/): Watches and clocks for birthdays, weddings, anniversaries, Raksha Bandhan, Diwali and corporate gifting.
 
+## Brands sold
+Titan, Sonata, Timex, Maxima, Lamex
+
 ## Brands serviced
-Titan, Sonata, Fastrack, Casio, Timex, Maxima, HMT, Fossil, Citizen, Ajanta & Orpat Clocks
+Titan, Sonata, Timex, Maxima, Lamex, Seiko, Fastrack, Casio, HMT, Fossil, Citizen, Ajanta & Orpat Clocks
+
+## Customer reviews (Google, 5★)
+- "I visited to replace the battery in my Seiko watch, which I had purchased directly from Japan. Uncle handled my watch with great care and replaced the battery in just 5 minutes. Before coming here, I had visited an authorized showroom where they quoted ₹1,200 for a battery replacement. He explained that a large part of that price was for the brand's premium service, while the actual battery replacement costs much less. I got it replaced for just ₹300, and the battery is expected to last around 2 years. I'm very satisfied with the quick, honest, and professional service. Highly recommended for anyone looking for reliable watch repairs and battery replacements." — Sanjeevani Bhandari (Seiko battery replacement)
+- "I visited this shop for a wall clock repair, and I had a wonderful experience. Uncle did an excellent job fixing the clock and completed the repair in just 10 minutes. He even provided some complimentary service, added a new battery from his side, and gave me a night lamp as well. He is a very kind, gentle, and honest person who genuinely cares about his customers. The service was quick, professional, and beyond my expectations. I would definitely recommend this place to anyone looking for clock or watch repairs. Thank you for the great service!" — Parth Goswami (Wall clock repair)
+- "Had a great experience at this watch shop. A special thanks to Vasudev Ji for helping me choose the perfect watch belt. He was courteous, knowledgeable, and ensured I got the right fit and style for my watch. The quality of the belt is excellent, the pricing was fair, and the overall service was outstanding. I highly recommend this shop to anyone looking for quality watch accessories and excellent customer service." — Noorali Ansari (Watch belt (strap))
+- "Fantastic experience! They have an impressive collection of watches, ranging from classic to modern styles. The staff is knowledgeable, friendly, and helped me find exactly what I was looking for. Highly recommend!" — Harshil Sangat (Buying a watch)
 
 ## Areas served
 Customers come from: Chandkheda, Nigam Nagar, Motera, Visat, Sabarmati, Zundal, Tragad, New Ranip, Koteshwar, Bhat, Sughad, Ranip, Nirnay Nagar, Chandlodiya, Gota, Jagatpur, Ognaj, Vadaj, Nava Vadaj, Naranpura, Ghatlodia, Chanakyapuri, Sola, Science City, Adalaj, Koba, Kudasan, Raysan, Gandhinagar, Usmanpura, Ashram Road, Navrangpura, Memnagar, Thaltej, Bodakdev, Vastrapur, Satellite, Bopal, Naroda, Nikol, Bapunagar, Vastral, Maninagar, and the rest of Ahmedabad and Gandhinagar.

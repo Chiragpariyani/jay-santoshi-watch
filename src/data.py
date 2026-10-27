@@ -26,7 +26,7 @@ BUSINESS = {
     "phone": "+919374641275",
     "phone2_display": "+91 90991 38100",
     "phone2": "+919099138100",
-    "whatsapp": "919374641275",
+    "whatsapp": "919099138100",
     "hours_display": "Open daily, 10:30 AM – 9:00 PM",
     "opens": "10:30",
     "closes": "21:00",
@@ -234,7 +234,7 @@ SERVICES = [
         "kind": "shop",
         "in_areas": False,
         "keyword": "watch shop",
-        "short": "Analog, digital and fashion wristwatches for men, women and kids, for daily wear, office and gifting.",
+        "short": "Titan, Sonata, Timex, Maxima and Lamex wristwatches for men, women and kids, for daily wear, office and gifting.",
         "intro": [
             "Looking for a new watch in Chandkheda? Jay Santoshi Watch has a range of wristwatches for men, women and kids, from simple everyday analog watches to sporty digital watches and stylish fashion watches.",
             "Customers often tell us our prices compare well with buying online, and you get to see the watch, try it on and get the strap sized before you leave.",
@@ -245,6 +245,7 @@ SERVICES = [
             "Kids' digital and analog watches",
             "Sports and digital watches",
             "Couple watches and gift sets",
+            "Brands: Titan, Sonata, Timex, Maxima and Lamex",
             "Free strap or chain sizing when you buy",
         ],
         "faqs": [
@@ -337,16 +338,33 @@ SERVICES = [
 # ---------------------------------------------------------------------------
 
 BRANDS = [
-    {"slug": "titan", "name": "Titan", "note": "Titan is one of India's most-worn watch brands. We handle everyday Titan quartz watch jobs: battery replacement, strap and chain fitting, glass replacement and general repairs."},
-    {"slug": "sonata", "name": "Sonata", "note": "Sonata watches are popular, value-for-money everyday watches. We regularly replace Sonata batteries, straps and glass, and repair stopped Sonata watches."},
-    {"slug": "fastrack", "name": "Fastrack", "note": "Fastrack watches are popular with students and young professionals. We change batteries, fit new straps and fix common problems on Fastrack analog and digital watches."},
-    {"slug": "casio", "name": "Casio", "note": "From classic Casio digital watches to G-Shock-style models, we help with battery changes, straps and common button and display issues."},
-    {"slug": "timex", "name": "Timex", "note": "We replace Timex watch batteries, straps and glass, and repair everyday Timex analog and digital watches."},
-    {"slug": "maxima", "name": "Maxima", "note": "Maxima watches are common in Gujarat. We change Maxima batteries, fit straps and chains, and repair everyday Maxima watches."},
-    {"slug": "hmt", "name": "HMT", "note": "Many families still have HMT watches with real sentimental value. Bring yours in and we'll check it and tell you honestly what can be done."},
-    {"slug": "fossil", "name": "Fossil", "note": "We help with battery replacement, strap and chain resizing and general care for Fossil fashion watches. Some model-specific parts may need the brand's service centre."},
-    {"slug": "citizen", "name": "Citizen", "note": "We help with battery replacement, straps and chains on Citizen quartz watches. Eco-Drive and complicated models may need specialist or brand service."},
-    {"slug": "ajanta-orpat", "name": "Ajanta & Orpat Clocks", "note": "Ajanta and Orpat wall clocks are in many Gujarati homes. We repair them and replace their movements, often keeping the original dial and frame."},
+    # sold=True: brands we sell new watches of (and also service)
+    {"slug": "titan", "name": "Titan", "sold": True, "note": "We sell new Titan watches and service them too. Titan is one of India's most-worn watch brands, and we handle everyday Titan jobs: battery replacement, strap and chain fitting, glass replacement and general repairs."},
+    {"slug": "sonata", "name": "Sonata", "sold": True, "note": "We sell Sonata watches, which are popular, value-for-money everyday watches. We also regularly replace Sonata batteries, straps and glass, and repair stopped Sonata watches."},
+    {"slug": "timex", "name": "Timex", "sold": True, "note": "We sell Timex watches and service them too, including battery, strap and glass replacement and repairs of everyday Timex analog and digital watches."},
+    {"slug": "maxima", "name": "Maxima", "sold": True, "note": "We sell Maxima watches, which are common in Gujarat. We also change Maxima batteries, fit straps and chains, and repair everyday Maxima watches."},
+    {"slug": "lamex", "name": "Lamex", "sold": True, "note": "We sell Lamex watches and help with batteries, straps and everyday repairs on them."},
+    {"slug": "seiko", "name": "Seiko", "sold": False, "note": "We replace batteries on Seiko quartz watches, including watches bought abroad, usually in a few minutes and for much less than the brand's own service. We also fit straps and do general care."},
+    {"slug": "fastrack", "name": "Fastrack", "sold": False, "note": "Fastrack watches are popular with students and young professionals. We change batteries, fit new straps and fix common problems on Fastrack analog and digital watches."},
+    {"slug": "casio", "name": "Casio", "sold": False, "note": "From classic Casio digital watches to G-Shock-style models, we help with battery changes, straps and common button and display issues."},
+    {"slug": "hmt", "name": "HMT", "sold": False, "note": "Many families still have HMT watches with real sentimental value. Bring yours in and we'll check it and tell you honestly what can be done."},
+    {"slug": "fossil", "name": "Fossil", "sold": False, "note": "We help with battery replacement, strap and chain resizing and general care for Fossil fashion watches. Some model-specific parts may need the brand's service centre."},
+    {"slug": "citizen", "name": "Citizen", "sold": False, "note": "We help with battery replacement, straps and chains on Citizen quartz watches. Eco-Drive and complicated models may need specialist or brand service."},
+    {"slug": "ajanta-orpat", "name": "Ajanta & Orpat Clocks", "sold": False, "note": "Ajanta and Orpat wall clocks are in many Gujarati homes. We repair them and replace their movements, often keeping the original dial and frame."},
+]
+
+SOLD_BRANDS = [b["name"] for b in BRANDS if b["sold"]]
+
+# Real Google reviews (copied word-for-word from the Google Maps listing).
+REVIEWS = [
+    {"author": "Sanjeevani Bhandari", "when": "3 months ago", "stars": 5, "topic": "Seiko battery replacement",
+     "text": "I visited to replace the battery in my Seiko watch, which I had purchased directly from Japan. Uncle handled my watch with great care and replaced the battery in just 5 minutes. Before coming here, I had visited an authorized showroom where they quoted ₹1,200 for a battery replacement. He explained that a large part of that price was for the brand's premium service, while the actual battery replacement costs much less. I got it replaced for just ₹300, and the battery is expected to last around 2 years. I'm very satisfied with the quick, honest, and professional service. Highly recommended for anyone looking for reliable watch repairs and battery replacements."},
+    {"author": "Parth Goswami", "when": "4 months ago", "stars": 5, "topic": "Wall clock repair",
+     "text": "I visited this shop for a wall clock repair, and I had a wonderful experience. Uncle did an excellent job fixing the clock and completed the repair in just 10 minutes. He even provided some complimentary service, added a new battery from his side, and gave me a night lamp as well. He is a very kind, gentle, and honest person who genuinely cares about his customers. The service was quick, professional, and beyond my expectations. I would definitely recommend this place to anyone looking for clock or watch repairs. Thank you for the great service!"},
+    {"author": "Noorali Ansari", "when": "3 months ago", "stars": 5, "topic": "Watch belt (strap)",
+     "text": "Had a great experience at this watch shop. A special thanks to Vasudev Ji for helping me choose the perfect watch belt. He was courteous, knowledgeable, and ensured I got the right fit and style for my watch. The quality of the belt is excellent, the pricing was fair, and the overall service was outstanding. I highly recommend this shop to anyone looking for quality watch accessories and excellent customer service."},
+    {"author": "Harshil Sangat", "when": "2 months ago", "stars": 5, "topic": "Buying a watch",
+     "text": "Fantastic experience! They have an impressive collection of watches, ranging from classic to modern styles. The staff is knowledgeable, friendly, and helped me find exactly what I was looking for. Highly recommend!"},
 ]
 
 # ---------------------------------------------------------------------------

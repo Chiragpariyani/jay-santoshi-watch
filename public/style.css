@@ -132,3 +132,10 @@ table.hours td+td{text-align:right}
 @media (max-width:760px){.bar{display:grid}.ftr{padding-bottom:110px}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 @media (max-width:760px){.top span:first-child{display:none}.top .wrap{justify-content:center}}
+.reviews{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}
+.review{margin:0;background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;display:flex;flex-direction:column;gap:8px}
+.review .stars{font-size:1.1rem;color:#f2a900}
+.review blockquote{margin:0;color:var(--ink-2);font-size:.98rem}
+.review blockquote p{margin:0}
+.review figcaption{font-size:.88rem;color:var(--muted);margin-top:auto}
+.review figcaption strong{color:var(--ink)}
