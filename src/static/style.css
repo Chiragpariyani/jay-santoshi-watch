@@ -149,3 +149,5 @@ table.hours td+td{text-align:right}
 .gallery{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));align-items:start}
 .gallery .photo img{aspect-ratio:3/4;object-fit:cover}
 .photo-side{max-width:300px;margin:8px 0 18px}
+.hero-video video{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;border-radius:var(--radius);box-shadow:var(--shadow);border:3px solid rgba(255,255,255,.12);background:#0e1730 url("/video/shop-tour-poster.webp") center/cover}
+.hero-video{max-width:440px;justify-self:center;width:100%}

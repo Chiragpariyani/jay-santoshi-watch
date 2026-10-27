@@ -56,3 +56,10 @@ python3 src/build.py      # needs Python 3; Pillow is optional (for PNG icons)
 Then commit and push. Vercel and Netlify redeploy automatically.
 
 To add a new area, copy one entry in `AREAS`, change it, and rebuild. Its page, links and sitemap entry are created automatically.
+
+## Home-page video
+
+The hero video (`src/static/video/`) is made from the shop photos by `python3 src/make_video.py` (needs Pillow and ffmpeg).
+The page shows the poster image instantly and only downloads the ~0.9 MB video after the page has loaded and the video is on screen.
+It is skipped for data-saver, 2G and reduced-motion visitors, so page speed isn't affected.
+To use a real video instead, replace `shop-tour.mp4` / `shop-tour.webm` (keep them short, muted and under ~1–2 MB) and `shop-tour-poster.webp`.

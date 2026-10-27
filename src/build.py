@@ -286,6 +286,43 @@ def gallery(keys, heading="Inside our shop", alt=False, intro=""):
             f'<div class="gallery">{figs}</div></div></section>')
 
 
+VIDEO_POSTER = "/video/shop-tour-poster.webp"
+
+
+def hero_video():
+    """Poster image paints instantly (LCP); the video file is fetched only after the page has fully loaded."""
+    return f"""<figure class="photo hero-photo hero-video">
+<video id="shop-video" muted loop playsinline preload="none" width="480" height="600" poster="{VIDEO_POSTER}"
+ aria-label="Short video tour of Jay Santoshi Watch: shop front, wall clocks, watch displays and Ajanta clocks"></video>
+<figcaption>A quick look at our shop in Nigam Nagar, Chandkheda.</figcaption></figure>
+<script>
+addEventListener("load", function () {{
+  var v = document.getElementById("shop-video"), c = navigator.connection || {{}};
+  if (!v || c.saveData || /2g/.test(c.effectiveType || "") || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  function start() {{
+    [["/video/shop-tour.webm", "video/webm"], ["/video/shop-tour.mp4", "video/mp4"]].forEach(function (s) {{
+      var el = document.createElement("source"); el.src = s[0]; el.type = s[1]; v.appendChild(el);
+    }});
+    v.load(); var p = v.play(); if (p && p.catch) p.catch(function () {{}});
+  }}
+  if (!("IntersectionObserver" in window)) return setTimeout(start, 1200);
+  var io = new IntersectionObserver(function (es) {{
+    if (es[0].isIntersecting) {{ io.disconnect(); setTimeout(start, 800); }}
+  }});
+  io.observe(v);
+}});
+</script>"""
+
+
+def video_schema():
+    return {"@type": "VideoObject", "name": f"{B['name']} shop tour, Chandkheda, Ahmedabad",
+            "description": "A short look at Jay Santoshi Watch in Nigam Nagar, Chandkheda: the TITAN signboard shop front, "
+                           "wall clocks, digital LED clocks, Titan, Sonata and Fastrack watch displays, and Ajanta clocks.",
+            "thumbnailUrl": [SITE_URL + VIDEO_POSTER], "uploadDate": "2026-10-27",
+            "duration": "PT18S", "contentUrl": SITE_URL + "/video/shop-tour.mp4", "embedUrl": SITE_URL + "/",
+            "publisher": {"@id": BIZ_ID}}
+
+
 def review_card(r):
     return (f'<figure class="review"><div class="stars" aria-label="{r["stars"]} out of 5 stars">{"★" * r["stars"]}</div>'
             f'<blockquote><p>{e(r["text"])}</p></blockquote>'
@@ -326,7 +363,7 @@ def area_pills(areas, service=None):
     return '<ul class="pills">' + "".join(out) + "</ul>"
 
 
-def page(path, title, description, body, schema=None, crumbs=None, og_type="website", priority="0.6"):
+def page(path, title, description, body, schema=None, crumbs=None, og_type="website", priority="0.6", head_extra=""):
     canonical = SITE_URL + path
     graph = [business_schema()]
     if path == "/":
@@ -364,7 +401,7 @@ def page(path, title, description, body, schema=None, crumbs=None, og_type="webs
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
-<link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="/style.css">{head_extra}
 <script type="application/ld+json">{ld}</script>
 </head>
 <body>
@@ -464,7 +501,7 @@ def build_home():
 <div class="btns"><a class="btn btn-gold" href="tel:{B["phone"]}">{icon("phone", 18)} Call {e(B["phone_display"])}</a>
 <a class="btn btn-wa" href="{e(wa_link())}" rel="noopener" target="_blank">{icon("wa", 18)} WhatsApp us</a>
 <a class="btn btn-line" href="{e(B["maps_url"])}" rel="noopener" target="_blank">{icon("pin", 18)} Directions</a></div>
-</div>{photo("interior", eager=True, cls="photo hero-photo")}</div></section>
+</div>{hero_video()}</div></section>
 <section><div class="wrap">{answer_box(summary, "About us in one paragraph")}
 <p class="local">ચાંદખેડામાં ઘડિયાળની દુકાન અને ઘડિયાળ રિપેર · चांदखेड़ा में घड़ी की दुकान और घड़ी रिपेयर</p></div></section>
 <section><div class="wrap"><h2 style="margin-top:0">Watch &amp; clock repair services</h2>{services}</div></section>
@@ -472,7 +509,7 @@ def build_home():
 <p>From {B["review_count"]}+ Google reviews, these are the things customers mention most:</p><div class="grid">{themes}</div>
 </div></section>
 {reviews_section(range(len(REVIEWS)), "Real reviews from our customers")}
-{gallery(["storefront", "display", "station-clock", "alarm-clock"], "Visit our shop", alt=True, intro="Watches from Titan, Sonata, Fastrack, Lamex and Maxima, Ajanta wall and digital clocks, and a counter for battery and strap work. Look for the red TITAN signboard at Swapna Shilp Complex, Nigam Nagar.")}
+{gallery(["interior", "display", "station-clock", "alarm-clock"], "Visit our shop", alt=True, intro="Watches from Titan, Sonata, Fastrack, Lamex and Maxima, Ajanta wall and digital clocks, and a counter for battery and strap work. Look for the red TITAN signboard at Swapna Shilp Complex, Nigam Nagar.")}
 <section><div class="wrap"><h2 style="margin-top:0">Watch shop near you, across Ahmedabad</h2>
 <p>We're in Chandkheda, North Ahmedabad, close to Motera, Sabarmati, Visat, Zundal, Tragad and Gandhinagar. Customers also come to us from across the city. Find your area:</p>
 {area_pills(AREAS)}</div></section>
@@ -486,7 +523,8 @@ def build_home():
     page("/", f"{B['name']} | Watch Shop & Watch Repair in Chandkheda, Ahmedabad",
          f"Watch shop & repair in Chandkheda, Ahmedabad: battery replacement, watch & clock repair, straps, glass. "
          f"Rated {B['rating']}★ ({B['review_count']}+ reviews). Call {B['phone_display']}.",
-         body, schema=[faq_schema(faqs)], priority="1.0")
+         body, schema=[faq_schema(faqs), video_schema()], priority="1.0",
+         head_extra=f'\n<link rel="preload" as="image" href="{VIDEO_POSTER}" fetchpriority="high">')
 
 
 def build_services_index():

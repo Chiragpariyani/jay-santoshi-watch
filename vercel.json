@@ -4,7 +4,7 @@
   "trailingSlash": true,
   "headers": [
     {
-      "source": "/(.*)\\.(css|png|svg|webp|jpg)",
+      "source": "/(.*)\\.(css|png|svg|webp|jpg|webm|mp4)",
       "headers": [
         {
           "key": "Cache-Control",
