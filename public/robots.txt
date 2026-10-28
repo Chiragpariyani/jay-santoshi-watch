@@ -44,4 +44,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://jay-santoshi-watch.vercel.app/sitemap.xml
+Sitemap: https://www.jaysantoshi.watch/sitemap.xml

@@ -37,7 +37,7 @@ The ready-to-deploy website is in the **`public/`** folder.
 
 ## After deploying: important steps
 
-1. **Set your real domain.** In `src/data.py`, change `SITE_URL` (currently `https://jay-santoshi-watch.vercel.app`) to your actual URL, then rebuild (see below) and push.
+1. **Domain:** the site lives at https://www.jaysantoshi.watch (`SITE_URL` in `src/data.py`). The old `jay-santoshi-watch.vercel.app` address redirects there (see `vercel.json`).
 2. **Google Search Console:** add the site, verify it, and submit `https://<your-domain>/sitemap.xml`.
 3. **Bing Webmaster Tools:** import from Search Console. ChatGPT search uses Bing's index.
 4. **Google Business Profile:** put the website URL in the "Website" field of your Maps listing.

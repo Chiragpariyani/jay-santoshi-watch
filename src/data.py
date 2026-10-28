@@ -8,7 +8,7 @@ Edit this file, then run `python3 src/build.py` to regenerate the site in /publi
 # ---------------------------------------------------------------------------
 
 # Change this to your real domain once you connect one (no trailing slash).
-SITE_URL = "https://jay-santoshi-watch.vercel.app"
+SITE_URL = "https://www.jaysantoshi.watch"
 
 BUSINESS = {
     "name": "Jay Santoshi Watch",

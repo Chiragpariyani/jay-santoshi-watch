@@ -27,6 +27,17 @@
       "source": "/brands/ajanta-orpat/",
       "destination": "/brands/ajanta/",
       "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "jay-santoshi-watch.vercel.app"
+        }
+      ],
+      "destination": "https://www.jaysantoshi.watch/:path*",
+      "permanent": true
     }
   ]
 }
