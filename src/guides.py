@@ -228,4 +228,89 @@ GUIDES = [
         ],
         "related": ["gift-watches", "wrist-watches", "wall-clocks"],
     },
+    {
+        "slug": "which-battery-does-my-car-key-use",
+        "title": "Which Battery Does My Car Key Use? (CR2032, CR2025, CR2016…)",
+        "description": "How to find your car key's battery size, signs the key battery is weak, and what to do if the remote doesn't work after a change.",
+        "answer": "Most car keys and car remotes use a 3V lithium coin cell, usually a CR2032, CR2025, CR2016 or CR1620. The exact code is printed on the old battery inside the key. Common signs of a weak key battery are a shorter remote range, having to press the button several times, and a 'key battery low' warning on the dashboard.",
+        "sections": [
+            ("How to find the right battery", [
+                ("ul", [
+                    "Open the key carefully (many have a small slot or a release button) and read the code on the old battery.",
+                    "Check your car's owner's manual. It lists the key battery type.",
+                    "Or simply bring the key to a watch or battery shop and they'll match it for you.",
+                ]),
+            ]),
+            ("Common car key battery codes", [
+                ("ul", [
+                    "CR2032: 20 mm wide, 3.2 mm thick. The most common size.",
+                    "CR2025: 20 mm wide, 2.5 mm thick.",
+                    "CR2016: 20 mm wide, 1.6 mm thick.",
+                    "CR1620 and CR1632: 16 mm wide, used in some smaller keys.",
+                ]),
+                "The exact size depends on the car and key model, so always match the code on your old battery.",
+            ]),
+            ("Signs your car key battery is weak", [
+                ("ul", [
+                    "The remote only works when you're close to the car.",
+                    "You need to press the button more than once.",
+                    "The key's LED is dim or doesn't blink.",
+                    "A 'key battery low' message appears on the dashboard.",
+                ]),
+            ]),
+            ("Remote still not working after a new battery?", [
+                "Check the battery is the right way up (usually + side facing up) and the contacts are clean. Some cars need the key to be re-synced after a battery change. The owner's manual explains how. If the key needs programming, visit your car's authorised service centre.",
+            ]),
+            ("Car key battery replacement in Chandkheda", [
+                "Jay Santoshi Watch replaces car key and car remote batteries for all car brands, usually in a few minutes while you wait. We don't program or duplicate keys.",
+            ]),
+        ],
+        "faqs": [
+            ("How long does a car key battery last?",
+             "Typically 2 to 4 years, depending on how often you use the remote and the type of key."),
+            ("Will I lose my car key settings if I change the battery?",
+             "Usually not. Most keys keep their pairing when the battery is changed quickly. Some cars need a simple re-sync, explained in the owner's manual."),
+        ],
+        "related": ["car-key-battery-replacement", "coin-cell-batteries"],
+    },
+    {
+        "slug": "coin-cell-battery-codes-explained",
+        "title": "Coin Cell Battery Codes Explained: CR2032 vs CR2025 vs LR44",
+        "description": "What the letters and numbers on coin cell and button batteries mean, which ones can be swapped, and which devices use them.",
+        "answer": "On lithium coin cells, 'CR' means 3V lithium, the first two digits are the diameter in mm and the last two are the thickness in tenths of a mm. So a CR2032 is 20 mm wide and 3.2 mm thick. LR44-type button cells are 1.5V alkaline, so they can't replace a 3V CR cell. Always match the code on your old battery.",
+        "sections": [
+            ("Reading the code", [
+                ("ul", [
+                    "CR2032: CR = 3V lithium, 20 = 20 mm diameter, 32 = 3.2 mm thick.",
+                    "CR2025: same width, 2.5 mm thick, lower capacity.",
+                    "CR2016: same width, 1.6 mm thick, lowest capacity of the three.",
+                    "LR44 / LR41: 1.5V alkaline button cells (often in toys, laser lights and calculators).",
+                ]),
+            ]),
+            ("Can I swap them?", [
+                "A thinner cell of the same width (like CR2025 for CR2032) may fit loosely and won't last as long, so it's only a short-term fix. Never use a 1.5V LR cell where a 3V CR cell is needed, or the reverse.",
+            ]),
+            ("Which devices use coin cells?", [
+                ("ul", [
+                    "Car keys and car remotes",
+                    "Glucometers and digital thermometers",
+                    "Digital weighing scales",
+                    "Calculators",
+                    "Watches",
+                    "Toys and laser lights",
+                ]),
+                "Hearing aids use their own zinc-air button batteries in sizes such as 10, 13, 312 and 675.",
+            ]),
+            ("Buying coin cells in Chandkheda", [
+                "Jay Santoshi Watch stocks common coin cells and button batteries. Bring the old battery or the device and we'll match it.",
+            ]),
+        ],
+        "faqs": [
+            ("Are CR2032 and DL2032 the same?",
+             "Yes. DL2032 is a different maker's name for the same 3V lithium size, so they're interchangeable."),
+            ("Why does my new coin cell die quickly?",
+             "Old stock, a device that draws more power, or a thinner substitute (like CR2025 instead of CR2032) can all shorten battery life."),
+        ],
+        "related": ["coin-cell-batteries", "remote-batteries", "car-key-battery-replacement"],
+    },
 ]

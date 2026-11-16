@@ -78,6 +78,8 @@ SVC_ICON = {
     "watch-repair": "tool", "watch-battery-replacement": "battery", "watch-strap-replacement": "strap",
     "watch-glass-replacement": "glass", "watch-servicing": "watch", "wall-clock-repair": "clock",
     "wrist-watches": "watch", "wall-clocks": "clock", "watch-accessories": "tag", "gift-watches": "gift",
+    "car-key-battery-replacement": "battery", "watch-chain-replacement": "strap", "watch-movement-replacement": "tool",
+    "smartwatch-straps": "strap", "remote-batteries": "battery", "coin-cell-batteries": "battery",
 }
 
 
@@ -268,13 +270,17 @@ def answer_box(text, label="Quick answer"):
 
 REVIEW_FOR = {"watch-battery-replacement": 0, "watch-repair": 0, "wall-clock-repair": 1, "wall-clocks": 1,
               "watch-strap-replacement": 2, "watch-accessories": 2, "wrist-watches": 3, "gift-watches": 3,
+              "watch-chain-replacement": 2, "smartwatch-straps": 2, "watch-movement-replacement": 1,
               "seiko": 0, "ajanta": 1}
 
 
 SVC_PHOTOS = {"wrist-watches": ["display", "interior"], "wall-clocks": ["interior", "station-clock", "alarm-clock"],
               "gift-watches": ["display", "station-clock", "alarm-clock"], "wall-clock-repair": ["interior"],
               "watch-accessories": ["interior"], "watch-battery-replacement": ["storefront"],
-              "watch-strap-replacement": ["storefront"], "watch-repair": ["interior"]}
+              "watch-strap-replacement": ["storefront"], "watch-repair": ["interior"],
+              "car-key-battery-replacement": ["storefront"], "remote-batteries": ["interior"],
+              "coin-cell-batteries": ["interior"], "watch-movement-replacement": ["interior", "station-clock"],
+              "watch-chain-replacement": ["display"], "smartwatch-straps": ["interior"]}
 BRAND_PHOTOS = {"titan": ["display", "storefront"], "sonata": ["display"], "fastrack": ["interior"],
                 "lamex": ["storefront", "interior"], "maxima": ["storefront"], "ajanta": ["station-clock", "alarm-clock", "interior"]}
 
@@ -481,7 +487,7 @@ def area_faqs(a):
 # ---------------------------------------------------------------------------
 
 def build_home():
-    services = service_cards(REPAIRS) + "<h3 style='margin-top:24px'>Shop watches &amp; clocks</h3>" + service_cards(SHOP)
+    services = service_cards(REPAIRS) + "<h3 style='margin-top:24px'>Shop watches, clocks, straps &amp; batteries</h3>" + service_cards(SHOP)
     themes = "".join(f'<div class="card"><div class="ico">{icon("star")}</div><h3>{e(t)}</h3><p>{e(d)}</p></div>' for t, d in REVIEW_THEMES)
     guides = "".join(f'<div class="card"><h3><a href="/guides/{g["slug"]}/">{e(g["title"])}</a></h3><p>{e(g["description"])}</p></div>' for g in GUIDES[:6])
     sold = '<ul class="pills">' + "".join(f'<li><a href="/brands/{b["slug"]}/">{e(b["name"])}</a></li>' for b in BRANDS if b["sold"]) + "</ul>"
@@ -490,6 +496,7 @@ def build_home():
         ("Where is Jay Santoshi Watch located?", f"{B['name']} is at {full_address()}."),
         ("What are the shop timings?", f"{B['hours_display']}. Call {B['phone_display']} to confirm on festival days."),
         ("How long does watch battery replacement take?", "Usually just a few minutes. Most customers wait while it's done."),
+        ("Do you change car key and car remote batteries?", "Yes, for all car brands, usually in a few minutes. We don't program or duplicate keys."),
         ("Do you repair wall clocks?", "Yes. We repair quartz wall, table and alarm clocks and replace clock movements. For very old mechanical clocks, please call first."),
         ("Do you repair all watch brands?", "We repair most everyday brands, including Titan, Sonata, Fastrack, Casio, Timex, Maxima and HMT. We're an independent shop, not an authorised service centre for any brand."),
         ("Which watch brands do you sell?", f"We sell {', '.join(SOLD_WATCH_BRANDS[:-1])} and {SOLD_WATCH_BRANDS[-1]} watches for men, women and kids, plus Ajanta wall clocks, digital LED clocks, alarm clocks, straps and watch accessories."),
@@ -511,7 +518,7 @@ def build_home():
 </div>{hero_video()}</div></section>
 <section><div class="wrap">{answer_box(summary, "About us in one paragraph")}
 <p class="local">ચાંદખેડામાં ઘડિયાળની દુકાન અને ઘડિયાળ રિપેર · चांदखेड़ा में घड़ी की दुकान और घड़ी रिपेयर</p></div></section>
-<section><div class="wrap"><h2 style="margin-top:0">Watch &amp; clock repair services</h2>{services}</div></section>
+<section><div class="wrap"><h2 style="margin-top:0">Watch, clock &amp; battery services</h2>{services}</div></section>
 <section class="alt"><div class="wrap"><h2 style="margin-top:0">Why customers rate us {B["rating"]}★</h2>
 <p>From {B["review_count"]}+ Google reviews, these are the things customers mention most:</p><div class="grid">{themes}</div>
 </div></section>
@@ -559,7 +566,8 @@ def brand_links_for_service(s):
         bs, head, idx = [b for b in BRANDS if b["sold"] and not is_clock_brand(b)], "Shop by brand", 1
     elif s["slug"] == "wall-clocks":
         bs, head, idx = [b for b in BRANDS if b["sold"] and is_clock_brand(b)], "Shop by brand", 1
-    elif s["slug"] in ("watch-repair", "watch-battery-replacement", "watch-strap-replacement", "watch-glass-replacement"):
+    elif s["slug"] in ("watch-repair", "watch-battery-replacement", "watch-strap-replacement", "watch-glass-replacement",
+                       "watch-chain-replacement", "watch-movement-replacement"):
         bs, head, idx = [b for b in BRANDS if not is_clock_brand(b)], "Repairs by brand", 2
     elif s["slug"] == "wall-clock-repair":
         bs, head, idx = [b for b in BRANDS if is_clock_brand(b)], "Repairs by brand", 2
@@ -567,6 +575,13 @@ def brand_links_for_service(s):
         return ""
     pills = "".join(f'<li><a href="{brand_paths(b)[idx]}">{e(b["name"])}</a></li>' for b in bs)
     return f'<section><div class="wrap"><h2 style="margin-top:0">{head}</h2><ul class="pills">{pills}</ul></div></section>'
+
+
+def svc_desc(s):
+    long = f"{s['name']} at {B['name']}, Nigam Nagar, Chandkheda, Ahmedabad. Rated {B['rating']}★ by {B['review_count']}+ customers. Open daily. Call {B['phone_display']}."
+    if len(long) <= 160:
+        return long
+    return f"{s['name']} at {B['name']}, Chandkheda, Ahmedabad. Rated {B['rating']}★ by {B['review_count']}+ customers. Call {B['phone_display']}."
 
 
 def build_service(s):
@@ -600,7 +615,7 @@ def build_service(s):
 <section class="alt"><div class="wrap"><h2 style="margin-top:0">Other services</h2>{others}</div></section>
 {cta_block()}"""
     page(path, f"{s['name']} in Chandkheda, Ahmedabad | {B['name']}",
-         f"{s['name']} at {B['name']}, Nigam Nagar, Chandkheda, Ahmedabad. Rated {B['rating']}★ by {B['review_count']}+ customers. Open daily. Call {B['phone_display']}.",
+         svc_desc(s),
          body, schema=[service_schema(s, path=path), faq_schema(faqs)], crumbs=crumbs, priority="0.9")
 
 

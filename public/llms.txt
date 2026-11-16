@@ -16,13 +16,19 @@
 ## Services
 - [Watch Repair](https://www.jaysantoshi.watch/services/watch-repair/): Repairs for all common brands of analog, digital and quartz watches: stopped watches, broken crowns, loose hands and more.
 - [Watch Battery Replacement](https://www.jaysantoshi.watch/services/watch-battery-replacement/): Fast cell replacement for quartz and digital watches, usually done while you wait.
-- [Watch Strap & Chain Replacement](https://www.jaysantoshi.watch/services/watch-strap-replacement/): New leather, silicone and metal straps, and resizing of metal chains by adding or removing links.
+- [Car Key & Car Remote Battery Replacement](https://www.jaysantoshi.watch/services/car-key-battery-replacement/): Car key and car remote (key fob) battery replacement for all car brands, usually done in minutes.
+- [Watch Strap Replacement](https://www.jaysantoshi.watch/services/watch-strap-replacement/): New leather, silicone and resin watch straps in the right width, fitted while you wait.
+- [Watch Chain Replacement & Resizing](https://www.jaysantoshi.watch/services/watch-chain-replacement/): New steel, gold-tone and two-tone watch chains in all sizes, plus chain resizing by adding or removing links.
 - [Watch Glass Replacement](https://www.jaysantoshi.watch/services/watch-glass-replacement/): Replacement of cracked or scratched watch glass (crystal) for round and many shaped watches.
 - [Watch Servicing & Cleaning](https://www.jaysantoshi.watch/services/watch-servicing/): Cleaning, check-up and care for watches that run slow, fast, or haven't been looked after for a long time.
+- [Watch & Clock Movement (Machine) Replacement](https://www.jaysantoshi.watch/services/watch-movement-replacement/): A new quartz movement (machine) for wristwatches and wall clocks that no longer work, keeping the original dial and case.
 - [Wall Clock & Clock Repair](https://www.jaysantoshi.watch/services/wall-clock-repair/): Repairs for quartz wall clocks, table clocks and alarm clocks, including movement (machine) replacement.
 - [Wrist Watches for Men, Women & Kids](https://www.jaysantoshi.watch/services/wrist-watches/): Titan, Sonata, Fastrack, Timex, Maxima and Lamex wristwatches for men, women and kids, for daily wear, office and gifting.
 - [Wall Clocks](https://www.jaysantoshi.watch/services/wall-clocks/): Wall clocks for living rooms, bedrooms, offices and shops, plus clocks for housewarming gifts.
 - [Straps, Chains & Watch Accessories](https://www.jaysantoshi.watch/services/watch-accessories/): Spare straps, metal chains, buckles, spring bars, watch batteries and other accessories.
+- [Smartwatch Straps & Belts](https://www.jaysantoshi.watch/services/smartwatch-straps/): Replacement straps and belts for Apple Watch, Samsung, Noise, boAt, Fire-Boltt, Amazfit and Fastrack Reflex smartwatches.
+- [TV & AC Remote Batteries (AA, AAA)](https://www.jaysantoshi.watch/services/remote-batteries/): AA and AAA pencil cells for TV, AC and set-top box remotes, plus coin cells for small remotes.
+- [Coin Cell & Button Batteries](https://www.jaysantoshi.watch/services/coin-cell-batteries/): CR2032, CR2025, CR2016, LR44 and other button cells for calculators, glucometers, weighing scales, hearing aids, toys and laser lights.
 - [Gift Watches & Clocks](https://www.jaysantoshi.watch/services/gift-watches/): Watches and clocks for birthdays, weddings, anniversaries, Raksha Bandhan, Diwali and corporate gifting.
 
 ## Brands sold
@@ -49,6 +55,8 @@ Customers come from: Chandkheda, Nigam Nagar, Motera, Visat, Sabarmati, Zundal, 
 - [Wall Clock Buying Guide: Size, Style and Silent Clocks](https://www.jaysantoshi.watch/guides/wall-clock-buying-guide/): Choose a wall clock by room size and use. Large, bold clocks suit living rooms. Simple, easy-to-read clocks suit kitchens and offices. Silent sweep-movement clocks suit bedrooms and study rooms. Check that the numbers are readable from across the room and that the style matches your decor.
 - [Watch Care Tips: 10 Simple Ways to Make Your Watch Last Longer](https://www.jaysantoshi.watch/guides/watch-care-tips/): Keep your watch away from heat, water it isn't rated for, magnets and hard knocks. Wipe off sweat after use, keep the crown pushed in, replace dead batteries quickly, and have the watch checked whenever the battery is changed. These simple habits can add years to a watch's life.
 - [Watch Gift Ideas for Birthdays, Weddings, Raksha Bandhan and Diwali](https://www.jaysantoshi.watch/guides/watch-gift-ideas/): For a watch gift, match the style to the person: classic analog for office wear, sporty digital for students and active people, slim bracelet watches for women, couple watches for weddings and anniversaries, and wall clocks for housewarmings. Set a budget, know their wrist size if possible, and buy from a shop that offers after-sales help.
+- [Which Battery Does My Car Key Use? (CR2032, CR2025, CR2016…)](https://www.jaysantoshi.watch/guides/which-battery-does-my-car-key-use/): Most car keys and car remotes use a 3V lithium coin cell, usually a CR2032, CR2025, CR2016 or CR1620. The exact code is printed on the old battery inside the key. Common signs of a weak key battery are a shorter remote range, having to press the button several times, and a 'key battery low' warning on the dashboard.
+- [Coin Cell Battery Codes Explained: CR2032 vs CR2025 vs LR44](https://www.jaysantoshi.watch/guides/coin-cell-battery-codes-explained/): On lithium coin cells, 'CR' means 3V lithium, the first two digits are the diameter in mm and the last two are the thickness in tenths of a mm. So a CR2032 is 20 mm wide and 3.2 mm thick. LR44-type button cells are 1.5V alkaline, so they can't replace a 3V CR cell. Always match the code on your old battery.
 
 ## Pages
 - [Home](https://www.jaysantoshi.watch/)
