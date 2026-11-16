@@ -30,6 +30,13 @@ AREA_SERVICES = [s for s in SERVICES if s["in_areas"]]
 TIER1 = [a for a in AREAS if a["tier"] == 1]
 
 
+def place(a):
+    """Area name with its city: 'Motera, Ahmedabad', 'Sargasan, Gandhinagar', 'Gandhinagar'."""
+    if "Gandhinagar" in a["name"]:
+        return a["name"]
+    return f"{a['name']}, {'Gandhinagar' if a['zone'] == 'Gandhinagar' else 'Ahmedabad'}"
+
+
 def has_combo(a):
     """Area+service pages exist for neighbouring areas (Chandkheda itself is covered by /services/)."""
     return a["tier"] == 1 and a["slug"] != B["locality"].lower()
@@ -157,7 +164,7 @@ def faq_schema(faqs):
 
 
 def service_schema(svc, area=None, path=None):
-    served = ({"@type": "Place", "name": f"{area['name']}, {B['city']}"} if area
+    served = ({"@type": "Place", "name": place(area)} if area
               else {"@type": "City", "name": B["city"]})
     name = f"{svc['name']} in {area['name']}" if area else f"{svc['name']} in {B['locality']}, {B['city']}"
     return {"@type": "Service", "name": name, "serviceType": svc["name"], "description": svc["short"],
@@ -486,7 +493,7 @@ def build_home():
         ("Do you repair wall clocks?", "Yes. We repair quartz wall, table and alarm clocks and replace clock movements. For very old mechanical clocks, please call first."),
         ("Do you repair all watch brands?", "We repair most everyday brands, including Titan, Sonata, Fastrack, Casio, Timex, Maxima and HMT. We're an independent shop, not an authorised service centre for any brand."),
         ("Which watch brands do you sell?", f"We sell {', '.join(SOLD_WATCH_BRANDS[:-1])} and {SOLD_WATCH_BRANDS[-1]} watches for men, women and kids, plus Ajanta wall clocks, digital LED clocks, alarm clocks, straps and watch accessories."),
-        ("Which areas do you serve?", "Customers come to us from Chandkheda, Motera, Sabarmati, Visat, Zundal, Tragad, Ranip, Gota, Gandhinagar and all over Ahmedabad."),
+        ("Which areas do you serve?", "Customers come to us from Chandkheda, Motera, Sabarmati, Visat, Tapovan Circle, Zundal, Adani Shantigram, GIFT City, Gota, Gandhinagar and all over Ahmedabad."),
     ]
     summary = (f"{B['name']} is a watch shop and watch & clock repair service at Swapna Shilp Complex, Nigam Nagar, "
                f"Chandkheda, Ahmedabad (near ONGC, Visat–Sabarmati Highway). It's rated {B['rating']}/5 from "
@@ -599,7 +606,7 @@ def build_area(a, i):
     near = [AREA[s] for s in a["near"] if s in AREA]
     faqs = area_faqs(a)
     lms = ", ".join(a["landmarks"])
-    body = f"""<div class="wrap page-head"><h1>Watch Shop &amp; Watch Repair in {e(a["name"])}, Ahmedabad</h1>
+    body = f"""<div class="wrap page-head"><h1>Watch Shop &amp; Watch Repair in {e(place(a))}</h1>
 <p class="lead">{e(area_intro(a, i))}</p>
 <div class="btns"><a class="btn btn-dark" href="tel:{B["phone"]}">{icon("phone", 18)} Call {e(B["phone_display"])}</a>
 <a class="btn btn-wa" href="{e(wa_link("Hello, I am from " + a["name"] + ". I have a query about"))}" rel="noopener" target="_blank">{icon("wa", 18)} WhatsApp</a>
@@ -615,8 +622,8 @@ def build_area(a, i):
 {faq_html(faqs, f"Questions from {a['name']} customers")}
 <section><div class="wrap"><h2 style="margin-top:0">Nearby areas</h2>{area_pills(near)}</div></section>
 <section><div class="wrap two"><div>{map_embed()}</div>{nap_card()}</div></section>"""
-    page(path, f"Watch Shop & Watch Repair in {a['name']}, Ahmedabad | {B['name']}",
-         f"Watch repair, battery replacement, straps and wall clock repair for {a['name']}, Ahmedabad. {B['name']}, Chandkheda: rated {B['rating']}★. Call {B['phone_display']}.",
+    page(path, f"Watch Shop & Watch Repair in {place(a)} | {B['name']}",
+         f"Watch repair, battery, straps & wall clock repair for {place(a)}. {B['name']}, Chandkheda: rated {B['rating']}★. Call {B['phone_display']}.",
          body, schema=[faq_schema(faqs)], crumbs=crumbs, priority="0.8" if a["tier"] < 3 else "0.7")
 
 
@@ -629,7 +636,7 @@ def build_area_service(a, s):
     intro = "".join(f"<p>{e(p)}</p>" for p in s["intro"])
     other = [x for x in AREA_SERVICES if x["slug"] != s["slug"]]
     other_links = '<ul class="pills">' + "".join(f'<li><a href="/areas/{a["slug"]}/{x["slug"]}/">{e(x["name"])} in {e(a["name"])}</a></li>' for x in other) + "</ul>"
-    body = f"""<div class="wrap page-head"><h1>{e(s["name"])} in {e(a["name"])}, Ahmedabad</h1>
+    body = f"""<div class="wrap page-head"><h1>{e(s["name"])} in {e(place(a))}</h1>
 <p class="lead">{e(s["short"])} For customers in {e(a["name"])}, from {e(B["name"])} in nearby Chandkheda: rated {B["rating"]}★ by {B["review_count"]}+ Google reviewers.</p>
 <div class="btns"><a class="btn btn-dark" href="tel:{B["phone"]}">{icon("phone", 18)} Call {e(B["phone_display"])}</a>
 <a class="btn btn-wa" href="{e(wa_link("Hello, I am from " + a["name"] + ". I want " + s["keyword"]))}" rel="noopener" target="_blank">{icon("wa", 18)} WhatsApp</a></div></div>
@@ -644,8 +651,8 @@ def build_area_service(a, s):
 <h2>{e(s["name"])} in nearby areas</h2>{area_pills(near, s)}
 <p style="margin-top:16px"><a href="/services/{s["slug"]}/">Read more about our {e(s["name"].lower())} service →</a></p></div></section>
 {cta_block()}"""
-    page(path, f"{s['name']} in {a['name']}, Ahmedabad | {B['name']}",
-         f"{s['name']} near {a['name']}, Ahmedabad at {B['name']}, Chandkheda. Rated {B['rating']}★ ({B['review_count']}+ reviews). Call {B['phone_display']}.",
+    page(path, f"{s['name']} in {place(a)} | {B['name']}",
+         f"{s['name']} near {place(a)} at {B['name']}, Chandkheda. Rated {B['rating']}★ ({B['review_count']}+ reviews). Call {B['phone_display']}.",
          body, schema=[service_schema(s, a, path), faq_schema(faqs)], crumbs=crumbs, priority="0.7")
 
 
