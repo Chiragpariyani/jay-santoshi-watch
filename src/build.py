@@ -12,7 +12,7 @@ import shutil
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from data import SITE_URL, BUSINESS as B, DAYS, REVIEW_THEMES, REVIEWS, SERVICES, BRANDS, SOLD_BRANDS, SOLD_WATCH_BRANDS, PHOTOS, AREAS  # noqa: E402
+from data import SITE_URL, BUSINESS as B, DAYS, REVIEW_THEMES, REVIEWS, SERVICES, BRANDS, SOLD_BRANDS, BRAND_SALES, SOLD_WATCH_BRANDS, PHOTOS, AREAS  # noqa: E402
 from guides import GUIDES  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -96,7 +96,7 @@ def business_schema():
         "@id": BIZ_ID,
         "name": B["name"],
         "alternateName": B["alt_names"],
-        "description": f"{B['name']} is a watch store and watch & clock repair shop in {B['locality']}, {B['city']}. "
+        "description": f"{B['name']} is an authorised Titan dealer, watch store and watch & clock repair shop in {B['locality']}, {B['city']}. "
                        "Watch battery replacement, watch repair, strap and chain replacement, glass replacement, "
                        "wall clock repair, and wristwatches and wall clocks for sale.",
         "url": SITE_URL + "/",
@@ -210,7 +210,7 @@ def footer():
 <div><h3>Areas</h3><ul>{area_links}</ul></div>
 <div><h3>More</h3><ul>{more}</ul></div>
 </div>
-<p class="legal">© {datetime.date.today().year} {e(B["name"])}, Chandkheda, Ahmedabad. {e(B["name"])} is an independent watch shop and repair service. It is not an authorised service centre of any brand; brand names are used only to describe the watches we work on.</p>
+<p class="legal">© {datetime.date.today().year} {e(B["name"])}, Chandkheda, Ahmedabad. {e(B["name"])} is an authorised Titan dealer. Repairs are done by our own team; we are not an authorised service centre of any brand. Other brand names describe the watches we sell and work on.</p>
 </div></footer>
 <nav class="bar" aria-label="Quick contact">
 <a href="tel:{B["phone"]}">{icon("phone")}Call</a>
@@ -504,7 +504,7 @@ def build_home():
 <h1>Watch Shop &amp; Watch Repair in Chandkheda, Ahmedabad</h1>
 <p class="lead">{e(B["name"])}: quick watch battery replacement, honest watch and wall clock repairs, new straps and chains, and Titan, Sonata, Fastrack, Timex, Maxima, Lamex watches and Ajanta clocks at fair prices. In Nigam Nagar, near ONGC.</p>
 <div class="meta"><span class="chip"><span class="stars">★★★★★</span> {B["rating"]}/5 · {B["review_count"]}+ Google reviews</span>
-<span class="chip">{icon("clock", 16)} {e(B["hours_display"])}</span><span class="chip">{icon("pin", 16)} Nigam Nagar, Chandkheda</span></div>
+<span class="chip">{icon("clock", 16)} {e(B["hours_display"])}</span><span class="chip">{icon("pin", 16)} Nigam Nagar, Chandkheda</span><span class="chip">{icon("tag", 16)} Authorised Titan dealer</span></div>
 <div class="btns"><a class="btn btn-gold" href="tel:{B["phone"]}">{icon("phone", 18)} Call {e(B["phone_display"])}</a>
 <a class="btn btn-wa" href="{e(wa_link())}" rel="noopener" target="_blank">{icon("wa", 18)} WhatsApp us</a>
 <a class="btn btn-line" href="{e(B["maps_url"])}" rel="noopener" target="_blank">{icon("pin", 18)} Directions</a></div>
@@ -553,6 +553,22 @@ STEPS_REPAIR = [
 ]
 
 
+def brand_links_for_service(s):
+    """Shop-by-brand / repairs-by-brand pills on the matching service pages."""
+    if s["slug"] in ("wrist-watches", "gift-watches"):
+        bs, head, idx = [b for b in BRANDS if b["sold"] and not is_clock_brand(b)], "Shop by brand", 1
+    elif s["slug"] == "wall-clocks":
+        bs, head, idx = [b for b in BRANDS if b["sold"] and is_clock_brand(b)], "Shop by brand", 1
+    elif s["slug"] in ("watch-repair", "watch-battery-replacement", "watch-strap-replacement", "watch-glass-replacement"):
+        bs, head, idx = [b for b in BRANDS if not is_clock_brand(b)], "Repairs by brand", 2
+    elif s["slug"] == "wall-clock-repair":
+        bs, head, idx = [b for b in BRANDS if is_clock_brand(b)], "Repairs by brand", 2
+    else:
+        return ""
+    pills = "".join(f'<li><a href="{brand_paths(b)[idx]}">{e(b["name"])}</a></li>' for b in bs)
+    return f'<section><div class="wrap"><h2 style="margin-top:0">{head}</h2><ul class="pills">{pills}</ul></div></section>'
+
+
 def build_service(s):
     path = f"/services/{s['slug']}/"
     crumbs = [("Home", "/"), ("Services", "/services/"), (s["name"], path)]
@@ -574,6 +590,7 @@ def build_service(s):
 <section><div class="wrap prose">{answer_box(f"{B['name']} offers {s['name'].lower()} at {full_address()}. {s['short']} Open {HOURS}.")}
 {intro}<p class="local">{e(s["local"])}</p></div></section>
 <section class="alt"><div class="wrap"><h2 style="margin-top:0">What's included</h2>{ticks(s["includes"])}{steps}</div></section>
+{brand_links_for_service(s)}
 {gallery(SVC_PHOTOS[s["slug"]], "At our Chandkheda shop") if s["slug"] in SVC_PHOTOS else ""}
 {reviews_section([REVIEW_FOR[s["slug"]]], "From our Google reviews", alt=True) if s["slug"] in REVIEW_FOR else ""}
 {faq_html(faqs)}
@@ -659,62 +676,182 @@ def build_area_service(a, s):
 def build_brands_index():
     crumbs = [("Home", "/"), ("Brands", "/brands/")]
     def cards(bs, label):
-        return '<div class="grid">' + "".join(f'<div class="card"><h3><a href="/brands/{b["slug"]}/">{e(b["name"])}{label}</a></h3><p>{e(b["note"])}</p></div>' for b in bs) + "</div>"
+        out = []
+        for b in bs:
+            hub, sales, service = brand_paths(b)
+            sub = (f'<p style="margin-top:10px;position:relative;z-index:1"><a href="{sales}">Buy</a> · <a href="{service}">Service</a></p>' if sales else "")
+            out.append(f'<div class="card"><h3><a href="{hub}">{e(b["name"])}{label}</a></h3><p>{e(b["note"])}</p>{sub}</div>')
+        return '<div class="grid">' + "".join(out) + "</div>"
     body = f"""<div class="wrap page-head"><h1>Watch Brands We Sell &amp; Repair in Ahmedabad</h1>
 <p class="lead">New Titan, Sonata, Fastrack, Timex, Maxima and Lamex watches and Ajanta clocks, plus battery replacement, straps, glass and everyday repairs for most popular watch and clock brands, at our Chandkheda shop.</p></div>
 <section><div class="wrap"><h2 style="margin-top:0">Brands we sell</h2>{cards([b for b in BRANDS if b["sold"]], " watches")}
 <h2>Brands we service</h2>{cards([b for b in BRANDS if not b["sold"]], " repair")}
-<p class="note">{e(B["name"])} is an independent watch shop. It is not an authorised service centre for any of these brands, and brand names are used only to describe the watches we work on. For warranty repairs, please contact the brand's authorised service centre.</p></div></section>{cta_block()}"""
+<p class="note">{e(B["name"])} is an authorised Titan dealer. Repairs are done by our own team; we are not an authorised service centre for any brand. Other brand names describe the products we sell and work on. For warranty repairs, please use the brand's authorised service centre.</p></div></section>{cta_block()}"""
     page("/brands/", f"Watch Brands We Sell & Repair: Titan, Sonata, Fastrack, Lamex, Ajanta | {B['name']}",
          "Buy Titan, Sonata, Fastrack, Timex, Maxima, Lamex watches & Ajanta clocks in Chandkheda. Repairs for Seiko, Casio, HMT, Fossil & more.",
          body, crumbs=crumbs, priority="0.8")
 
 
-def build_brand(b):
-    path = f"/brands/{b['slug']}/"
-    is_clock = "Clock" in b["name"]
-    noun = b["name"] if is_clock else f"{b['name']} watch"
-    crumbs = [("Home", "/"), ("Brands", "/brands/"), (b["name"], path)]
+def brand_paths(b):
+    """(hub, sales, service) URLs. Service-only brands use the hub URL as their service page."""
+    hub = f"/brands/{b['slug']}/"
+    if not b["sold"]:
+        return hub, None, hub
+    return hub, hub + ("clocks/" if is_clock_brand(b) else "watches/"), hub + "service/"
+
+
+def is_clock_brand(b):
+    return "Clock" in b["name"]
+
+
+def brand_disclaimer(b):
+    if BRAND_SALES.get(b["slug"], {}).get("dealer"):
+        return (f"{B['name']} is an authorised {b['name']} dealer for sales. Repairs are done by our own team; "
+                f"we are not an authorised {b['name']} service centre.")
+    if b["sold"]:
+        return (f"{B['name']} sells {b['name']} and repairs it independently; we are not an authorised "
+                f"{b['name']} service centre. Brand names describe the products we sell and work on.")
+    return (f"{B['name']} is an independent repair shop, not affiliated with or authorised by {b['name']}. "
+            "Brand names describe the watches we work on.")
+
+
+def build_brand_hub(b):
+    hub, sales, service = brand_paths(b)
+    info = BRAND_SALES[b["slug"]]
+    clock = is_clock_brand(b)
+    noun = b["name"] if clock else f"{b['name']} Watches"
+    dealer = info.get("dealer")
+    crumbs = [("Home", "/"), ("Brands", "/brands/"), (b["name"], hub)]
+    cards = (f'<div class="grid">'
+             f'<div class="card"><div class="ico">{icon("tag")}</div><h3><a href="{sales}">Buy {e(noun)}</a></h3>'
+             f'<p>{e(", ".join(info["styles"][:3]))}. {e(info.get("price", "Call or WhatsApp for prices."))}</p></div>'
+             f'<div class="card"><div class="ico">{icon("tool")}</div><h3><a href="{service}">{e(b["name"])} {"repair" if clock else "watch repair & battery"}</a></h3>'
+             f'<p>{"Movement replacement, hands and check-ups" if clock else "Battery, strap, chain, glass and everyday repairs"}. Call for price.</p></div></div>')
+    faqs = [
+        (f"Where can I buy {noun.lower() if clock else b['name'] + ' watches'} in Chandkheda?",
+         f"At {B['name']}, {full_address()}" + (f", an authorised {b['name']} dealer." if dealer else ".")),
+        (f"Do you also repair {b['name']}?", f"Yes. We do everyday {b['name']} repairs at the shop. See our {b['name']} service page or call {B['phone_display']}."),
+    ]
+    title = (f"{b['name']} – Authorised Dealer in Chandkheda, Ahmedabad" if dealer
+             else f"{noun} in Chandkheda, Ahmedabad: Buy & Service")
+    body = f"""<div class="wrap page-head"><h1>{e(title)}</h1><p class="lead">{e(info["intro"])}</p>
+<div class="btns"><a class="btn btn-dark" href="{sales}">{icon("tag", 18)} Shop {e(b["name"])}</a>
+<a class="btn btn-gold" href="{service}">{icon("tool", 18)} {e(b["name"])} service</a>
+<a class="btn btn-wa" href="{e(wa_link("Hi, I want to ask about " + b["name"]))}" rel="noopener" target="_blank">{icon("wa", 18)} WhatsApp</a></div></div>
+<section><div class="wrap">{answer_box(f"{B['name']} {'is an authorised ' + b['name'] + ' dealer and ' if dealer else ''}sells and services {b['name']} at {full_address()}. Open {HOURS}.")}
+{cards}<p class="note">{e(brand_disclaimer(b))}</p></div></section>
+{gallery(BRAND_PHOTOS[b["slug"]], f"{b['name']} at our shop", alt=True) if b["slug"] in BRAND_PHOTOS else ""}
+{faq_html(faqs)}{cta_block()}"""
+    page(hub, f"{title} | {B['name']}",
+         f"{noun}: buy and service at {B['name']}, Nigam Nagar, Chandkheda, Ahmedabad.{' Authorised dealer.' if dealer else ''} Rated {B['rating']}★. Call {B['phone_display']}.",
+         body, schema=[faq_schema(faqs), {"@type": "Brand", "name": b["name"]}], crumbs=crumbs, priority="0.7")
+
+
+def build_brand_sales(b):
+    hub, sales, service = brand_paths(b)
+    info = BRAND_SALES[b["slug"]]
+    clock = is_clock_brand(b)
+    noun = b["name"] if clock else f"{b['name']} watches"
+    dealer = info.get("dealer")
+    crumbs = [("Home", "/"), ("Brands", "/brands/"), (b["name"], hub), ("Buy", sales)]
+    price = info.get("price")
+    why = ["See and try it in person before you buy", "Free strap or chain sizing when you buy" if not clock else "Help choosing the right size and style for your wall",
+           "Genuine products with the brand's warranty card" if dealer else "Genuine products from the brand",
+           "Local after-sales help: batteries, straps and repairs at the same shop",
+           "Gift-ready: we'll help you pick within your budget"]
+    faqs = [
+        (f"Where can I buy {noun} near Chandkheda?",
+         f"{B['name']} at {full_address()} sells {noun}" + (f" as an authorised {b['name']} dealer." if dealer else ".")),
+        (f"What is the price of {noun} at your shop?",
+         (f"{price}. " if price else "") + f"Prices depend on the model. Call {B['phone_display']} or WhatsApp {B['phone2_display']} for current prices and offers."),
+        (f"Can I check if a {b['name']} model is in stock before visiting?",
+         f"Yes. Send a photo or model name on WhatsApp {B['phone2_display']} and we'll tell you if it's available."),
+    ]
+    if dealer:
+        faqs.append((f"Are your {b['name']} watches genuine?",
+                     f"Yes. {B['name']} is an authorised {b['name']} dealer, so every {b['name']} watch is genuine and comes with the brand's warranty card."))
+    if not clock:
+        faqs.append(("Do you size the strap or chain when I buy?", "Yes, free of cost, before you leave the shop."))
+    stock = ticks(info["styles"])
+    coll = (f"<h2>Collections in stock</h2>{ticks(info['collections'])}" if info["collections"] else "")
+    title = (f"Buy {b['name']} Watches in Chandkheda – Authorised {b['name']} Dealer" if dealer
+             else f"Buy {noun[0].upper() + noun[1:]} in Chandkheda, Ahmedabad")
+    body = f"""<div class="wrap page-head"><h1>{e(title)}</h1><p class="lead">{e(info["intro"])}</p>
+<div class="btns"><a class="btn btn-wa" href="{e(wa_link("Hi, do you have " + b["name"] + " " + ("clocks" if clock else "watches") + " in stock?"))}" rel="noopener" target="_blank">{icon("wa", 18)} Check stock on WhatsApp</a>
+<a class="btn btn-dark" href="tel:{B["phone"]}">{icon("phone", 18)} Call {e(B["phone_display"])}</a></div></div>
+<section><div class="wrap prose">{answer_box(f"Buy {noun} at {B['name']}, {full_address()}." + (f" Authorised {b['name']} dealer." if dealer else "") + (f" {price}." if price else "") + f" Open {HOURS}. Call for current prices.")}
+<h2>What we stock</h2>{stock}{coll}
+<h2>Price</h2><p>{e((price + ". ") if price else "")}Prices change with models and offers, so please call {e(B["phone_display"])} or WhatsApp {e(B["phone2_display"])} for the latest price.</p>
+<h2>Why buy from {e(B["name"])}</h2>{ticks(why)}
+<p class="note">{e(brand_disclaimer(b))}</p></div></section>
+{gallery(BRAND_PHOTOS[b["slug"]], f"{b['name']} at our shop", alt=True) if b["slug"] in BRAND_PHOTOS else ""}
+{reviews_section([3], "What buyers say")}
+{faq_html(faqs)}
+<section class="alt"><div class="wrap"><h2 style="margin-top:0">Already own a {e(b["name"])}{"" if clock else " watch"}?</h2>
+<p>We also do {e(b["name"])} {"clock repairs and movement replacement" if clock else "battery replacement, straps, glass and repairs"}. <a href="{service}">See {e(b["name"])} service →</a></p>
+<h2>Other brands we sell</h2><ul class="pills">{"".join(f'<li><a href="{brand_paths(x)[1]}">{e(x["name"])}</a></li>' for x in BRANDS if x["sold"] and x["slug"] != b["slug"])}</ul></div></section>
+{cta_block()}"""
+    page(sales, f"{title} | {B['name']}",
+         f"Buy {noun} in Chandkheda, Ahmedabad at {B['name']}.{' Authorised dealer.' if dealer else ''} Check stock on WhatsApp {B['phone2_display']}. Rated {B['rating']}★.",
+         body, schema=[faq_schema(faqs), {"@type": "Brand", "name": b["name"]}], crumbs=crumbs, priority="0.8")
+
+
+def build_brand_service(b):
+    hub, sales, service = brand_paths(b)
+    clock = is_clock_brand(b)
+    noun = b["name"] if clock else f"{b['name']} watch"
+    crumbs = [("Home", "/"), ("Brands", "/brands/"), (b["name"], hub)] + ([("Service", service)] if b["sold"] else [])
     items = (["Wall clock movement (machine) replacement", "Clock hands replacement", "Battery and contact cleaning", "General check-up"]
-             if is_clock else
+             if clock else
              [f"{b['name']} watch battery replacement", f"{b['name']} strap and metal chain replacement / resizing",
               f"{b['name']} watch glass replacement", "Crown, button and hand repairs", "Cleaning and general check-up"])
+    brand_centre = ["Repairs under the brand's warranty", "Model-specific original parts only the brand supplies"]
+    if b["slug"] == "fastrack":
+        brand_centre.append("Fastrack Reflex smart bands and smartwatches: charging or software problems")
     faqs = [
         (f"Where can I repair my {noun} in Ahmedabad?",
          f"{B['name']} at {full_address()} handles everyday {noun} repairs. Call {B['phone_display']} to check your model."),
+        (f"How much does {noun} {'repair' if clock else 'battery replacement'} cost?",
+         "It depends on the model and the job. We check it in front of you and tell you the price before starting, or call us for a quote."),
         (f"Are you an authorised {b['name']} service centre?",
-         f"No. {B['name']} is an independent watch shop. For warranty claims, contact {b['name']}'s authorised service centre. For out-of-warranty jobs like batteries, straps and glass, we can usually help."),
+         f"No. {'We are an authorised ' + b['name'] + ' dealer for sales, but repairs are done by our own team. ' if BRAND_SALES.get(b['slug'], {}).get('dealer') else ''}"
+         f"For warranty claims, use {b['name']}'s authorised service centre. For batteries, straps, glass and out-of-warranty jobs, we can usually help."),
     ]
-    if not is_clock:
-        faqs.insert(1, (f"How long does {b['name']} watch battery replacement take?",
-                        "Usually a few minutes while you wait, for most models."))
-    svc_links = service_cards([SVC[x] for x in (["wall-clock-repair", "wall-clocks"] if is_clock else
+    if not clock:
+        faqs.insert(1, (f"How long does {b['name']} watch battery replacement take?", "Usually a few minutes while you wait, for most models."))
+    if BRAND_SALES.get(b["slug"], {}).get("dealer"):
+        faqs.append((f"I bought my {b['name']} watch from you. Is the problem covered by warranty?",
+                     "Bring the watch with its warranty card and we'll check it and tell you whether it should go to the brand's service centre."))
+    title = (f"{b['name']} Repair in Chandkheda, Ahmedabad" if clock
+             else f"{b['name']} Watch Repair & Battery Replacement in Chandkheda, Ahmedabad")
+    svc_links = service_cards([SVC[x] for x in (["wall-clock-repair", "wall-clocks"] if clock else
                                                 ["watch-battery-replacement", "watch-repair", "watch-strap-replacement", "watch-glass-replacement"])])
-    if is_clock and b["sold"]:
-        title = f"{b['name']}: Buy & Repair in Chandkheda, Ahmedabad"
-        items = ["New wall clocks, station clocks, digital LED clocks and alarm clocks"] + items
-        faqs.insert(0, (f"Where can I buy {b['name']} in Chandkheda?",
-                        f"{B['name']} at {full_address()} sells {b['name']}. Call {B['phone_display']} or WhatsApp {B['phone2_display']} to ask about designs in stock."))
-    elif is_clock:
-        title = f"{b['name']} Repair in Ahmedabad"
-    elif b["sold"]:
-        title = f"{b['name']} Watches: Buy & Repair in Chandkheda, Ahmedabad"
-        items = [f"New {b['name']} watches for men, women and kids", "Free strap / chain sizing when you buy"] + items
-        faqs.insert(0, (f"Where can I buy {b['name']} watches in Chandkheda?",
-                        f"{B['name']} at {full_address()} sells {b['name']} watches. Call {B['phone_display']} or WhatsApp {B['phone2_display']} to ask about models in stock."))
-    else:
-        title = f"{b['name']} Watch Repair & Battery Replacement in Ahmedabad"
-    body = f"""<div class="wrap page-head"><h1>{e(title)}</h1><p class="lead">{e(b["note"])}</p></div>
-<section><div class="wrap prose">{answer_box(f"Bring your {noun} to {B['name']}, {full_address()}. We handle everyday jobs like {'movement replacement' if is_clock else 'batteries, straps, glass'} and repairs. Open {HOURS}.")}
+    buy = (f'<p>Looking for a new one? <a href="{sales}">Buy {e(b["name"])} at our shop →</a></p>' if sales else "")
+    body = f"""<div class="wrap page-head"><h1>{e(title)}</h1><p class="lead">{e(b["note"])}</p>
+<div class="btns"><a class="btn btn-dark" href="tel:{B["phone"]}">{icon("phone", 18)} Call for price</a>
+<a class="btn btn-wa" href="{e(wa_link("Hi, I need " + noun + " repair/battery"))}" rel="noopener" target="_blank">{icon("wa", 18)} WhatsApp</a></div></div>
+<section><div class="wrap prose">{answer_box(f"Bring your {noun} to {B['name']}, {full_address()}. We handle {'movement replacement and repairs' if clock else 'batteries, straps, glass and everyday repairs'}, usually quickly. Call for price. Open {HOURS}.")}
 <h2>{e(noun)} services</h2>{ticks(items)}
-<p class="note">{e(B["name"])} is an independent shop{" and is not an authorised " + e(b["name"]) + " service centre" if b["sold"] else " and is not affiliated with or authorised by " + e(b["name"])}. Brand names are used only to describe the watches and clocks we sell and work on.</p></div></section>
-{gallery(BRAND_PHOTOS[b["slug"]], f"{b['name']} at our shop") if b["slug"] in BRAND_PHOTOS else ""}
-{reviews_section([REVIEW_FOR[b["slug"]]], "From our Google reviews", alt=True) if b["slug"] in REVIEW_FOR else ""}
+<h2>Price</h2><p>Call {e(B["phone_display"])} for a price. We always check the {"clock" if clock else "watch"} and tell you the cost before starting any work.</p>
+<h2>What goes to the brand service centre</h2>{ticks(brand_centre)}{buy}
+<p class="note">{e(brand_disclaimer(b))}</p></div></section>
+<section class="alt"><div class="wrap"><h2 style="margin-top:0">How it works</h2><ol class="steps">{"".join(f"<li><strong>{e(t)}</strong><br>{e(d)}</li>" for t, d in STEPS_REPAIR)}</ol></div></section>
+{reviews_section([REVIEW_FOR.get(b["slug"], 1 if clock else 0)], "From our Google reviews")}
 <section class="alt"><div class="wrap"><h2 style="margin-top:0">Related services</h2>{svc_links}</div></section>
 {faq_html(faqs)}{cta_block()}"""
-    page(path, f"{title} | {B['name']}",
-         f"{noun} repair, battery & straps in Chandkheda, Ahmedabad at {B['name']}. Rated {B['rating']}★. Independent shop. Call {B['phone_display']}.",
-         body, schema=[faq_schema(faqs)], crumbs=crumbs, priority="0.6")
+    page(service, f"{title} | {B['name']}",
+         f"{noun} repair, battery & straps in Chandkheda, Ahmedabad at {B['name']}. Call for price. Rated {B['rating']}★. Call {B['phone_display']}.",
+         body, schema=[faq_schema(faqs), {"@type": "Service", "name": title, "serviceType": f"{b['name']} repair",
+                                          "provider": {"@id": BIZ_ID}, "brand": {"@type": "Brand", "name": b["name"]},
+                                          "areaServed": {"@type": "City", "name": B["city"]}, "url": SITE_URL + service}],
+         crumbs=crumbs, priority="0.7")
+
+
+def build_brand(b):
+    if b["sold"]:
+        build_brand_hub(b)
+        build_brand_sales(b)
+    build_brand_service(b)
 
 
 def render_section(blocks):

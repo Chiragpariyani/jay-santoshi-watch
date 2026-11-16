@@ -356,6 +356,38 @@ BRANDS = [
 ]
 
 SOLD_BRANDS = [b["name"] for b in BRANDS if b["sold"]]
+# Sales-page details for brands we sell. Prices only where the shop gave them ("call for price" otherwise).
+BRAND_SALES = {
+    "titan": {"dealer": True, "price": "Titan watches up to ₹10,000",
+              "collections": ["Titan Raga: elegant women's watches", "Titan Karishma: classic everyday watches",
+                              "Titan Neo: modern watches for men and women"],
+              "styles": ["Men's analog and day-date watches", "Women's and bracelet watches", "Couple watches and gift sets",
+                         "Wedding and festive gift watches"],
+              "intro": "Jay Santoshi Watch is an authorised Titan dealer in Chandkheda. Come and see genuine Titan watches in person, try them on, and take them home with the strap or chain sized to your wrist."},
+    "sonata": {"collections": ["Sonata Poze: stylish fashion watches"],
+               "styles": ["Men's everyday analog and day-date watches", "Women's watches", "Steel-chain and leather-strap watches",
+                          "Budget-friendly gift watches"],
+               "intro": "Sonata is India's favourite value-for-money watch brand, made by Titan. We keep a wide range of Sonata watches for men and women at our Chandkheda shop."},
+    "fastrack": {"collections": ["Fastrack Reflex: smart bands and smartwatches"],
+                 "styles": ["Trendy analog watches for college and office", "Sporty and digital watches",
+                            "Couple and gift watches"],
+                 "intro": "Fastrack is the youth brand from Titan: bold, colourful and trendy. Visit us in Chandkheda to see Fastrack analog watches and Fastrack Reflex smart wearables."},
+    "timex": {"collections": [],
+              "styles": ["Classic analog watches", "Sporty and digital watches", "Men's and women's watches"],
+              "intro": "Timex is a trusted international brand known for reliable, everyday watches. See our Timex range at our Chandkheda shop."},
+    "maxima": {"collections": [],
+               "styles": ["Men's analog and day-date watches", "Women's watches", "Budget-friendly gift watches"],
+               "intro": "Maxima watches are a popular, affordable choice across Gujarat. We stock Maxima watches for men and women for daily wear and gifting."},
+    "lamex": {"collections": [],
+              "styles": ["Men's analog watches", "Women's watches", "Steel-chain and leather-strap watches", "Gift watches"],
+              "intro": "Lamex watches give you a smart look at a friendly price. See the Lamex range at our Chandkheda shop."},
+    "ajanta": {"collections": [],
+               "styles": ["Wall clocks for living rooms, bedrooms and offices", "Silent (non-ticking) wall clocks",
+                          "Double-sided station clocks", "Digital LED wall clocks with date display",
+                          "RGB digital alarm clocks", "Pendulum-style clocks"],
+               "intro": "Ajanta clocks are in almost every Gujarati home. We sell a big range of Ajanta wall clocks, station clocks, digital LED clocks and alarm clocks. They're perfect for your home, office or a housewarming gift."},
+}
+
 SOLD_WATCH_BRANDS = [n for n in SOLD_BRANDS if "Clock" not in n]
 
 # Real shop photos (src/static/img). "pages": where each photo is shown.
